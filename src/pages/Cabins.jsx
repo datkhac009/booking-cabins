@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Heading from "../ui/Heading";
 import Row from "../ui/Row";
 import { apiCabins } from "../services/apiCabins";
+import CabinTable from "../features/cabins/CabinTable";
 
 function Cabins() {
   const [cabins, setCabins] = useState([]);
@@ -20,7 +21,8 @@ function Cabins() {
         <p>TEST</p>
       </Row>
       <div>
-        {cabins.length > 0 && <img src={cabins[0].image} alt="Cabin" />}
+        <CabinTable />
+        {/* {cabins.length > 0 && <img src={cabins[0].image} alt="Cabin" />} */}
       </div>
     </>
   );
