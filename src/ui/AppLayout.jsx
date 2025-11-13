@@ -24,7 +24,6 @@ function AppLayout() {
       <Header />
       <Sidebar />
       <Main>  
-      
         <Container>
           <Outlet />
         </Container>

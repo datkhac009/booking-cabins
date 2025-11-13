@@ -1,27 +1,23 @@
-import { useEffect, useState } from "react";
+import {  useState } from "react";
+import CreateCabinForm from '../features/cabins/CreateCabinForm';
 import Heading from "../ui/Heading";
 import Row from "../ui/Row";
-import { apiCabins } from "../services/apiCabins";
 import CabinTable from "../features/cabins/CabinTable";
+import Button from "../ui/Button"
 
 function Cabins() {
-  const [cabins, setCabins] = useState([]);
-  useEffect(() => {
-    apiCabins()
-      .then((data) => setCabins(data))
-      .catch((err) => console.error(err));
-  }, []);
-
-  console.log(cabins);
-
+  const [showForm,setShowForm] = useState(false)
   return (
     <>
       <Row type="horizontal">
         <Heading as="h1">All cabins</Heading>
-        <p>TEST</p>
       </Row>
       <div>
         <CabinTable />
+        <Button onClick={ () => setShowForm((s)=>!s)} style={{width :"100%" , marginBottom:"5rem" , marginTop:"1.5rem"}}>Add new Cabin</Button>
+        {showForm && <CreateCabinForm closeModal={setShowForm}/>}
+
+
         {/* {cabins.length > 0 && <img src={cabins[0].image} alt="Cabin" />} */}
       </div>
     </>

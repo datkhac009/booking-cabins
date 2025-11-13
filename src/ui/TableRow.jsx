@@ -60,7 +60,7 @@ export default function CabinRow({ cabin, cols }) {
           fontWeight: "bold",
         }}
       >
-        {discount ? `$${discount.toFixed(2)}` : "-"}
+        {discount ? `$${discount.toFixed(2)}` : "No Discount"}
       </div>
 
       {/* Cột 5: Actions tách hẳn bên phải */}
