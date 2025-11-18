@@ -9,10 +9,11 @@ export async function apiCabins() {
   if (error) throw new Error(error.message || "Error Cabins");
   return data;
 }
+
 //Create Cabins và upload ảnh cabins vào storage
 export async function createCabins(newCabin) {
   console.log("📦 Received data:", newCabin);
-  
+
   // BƯỚC 1: Xử lý file ảnh
   // Kiểm tra nếu image là FileList (từ input file) thì lấy file đầu tiên
   let imageFile = newCabin.image;
@@ -33,7 +34,7 @@ export async function createCabins(newCabin) {
   // Math.random() tạo số ngẫu nhiên tránh trùng tên
   // replaceAll("/", "") loại bỏ ký tự "/" trong tên file (tránh lỗi path)
   const imgName = `${Math.random()}-${imageFile.name}`.replaceAll("/", "");
-  
+
   // Tạo URL public để lưu vào database
   const imagePath = `${supabaseUrl}/storage/v1/object/public/cabins-image/${imgName}`;
 
@@ -41,12 +42,12 @@ export async function createCabins(newCabin) {
 
   // BƯỚC 3: Upload ảnh lên Supabase Storage
   console.log("⬆️ Uploading to storage...");
-  
+
   const { data: uploadData, error: storageError } = await supabase.storage
     .from("cabins-image") // Tên bucket storage (phải đã tạo trong Supabase)
     .upload(imgName, imageFile, {
-      cacheControl: '3600',
-      upsert: false // Không ghi đè file cũ
+      cacheControl: "3600",
+      upsert: false, // Không ghi đè file cũ
     });
 
   // Nếu upload ảnh thất bại thì dừng luôn, không tạo cabin
@@ -60,7 +61,7 @@ export async function createCabins(newCabin) {
   // BƯỚC 4: Tạo cabin record trong database
   // Destructuring để tách image ra, tránh gửi File object lên database
   const { image, ...cabinData } = newCabin;
-    
+
   const { data, error } = await supabase
     .from("cabins")
     .insert([{ ...cabinData, image: imagePath }]) // Gửi imagePath (string) thay vì File object
@@ -105,32 +106,32 @@ export async function deleteCabin(id) {
   const { image } = cabinData;
 
   // Hàm xóa cabin khỏi database
-const { data, error, count, status } = await supabase
-.from("cabins")
-.delete({ count: "exact" }) // Chỉ định số lượng bản ghi đã xóa
-.eq("id", id) // Kiểm tra xem id cabin có tồn tại hay không
-.select("id"); // Lấy id của cabin đã xóa
+  const { data, error, count, status } = await supabase
+    .from("cabins")
+    .delete({ count: "exact" }) // Chỉ định số lượng bản ghi đã xóa
+    .eq("id", id) // Kiểm tra xem id cabin có tồn tại hay không
+    .select("id"); // Lấy id của cabin đã xóa
 
-// Kiểm tra nếu có lỗi từ database
-if (error) {
-  console.error("❌ Database error:", error); // In ra lỗi nếu có
-  return null; // Trả về null nếu có lỗi
-}
-
-// Xóa ảnh trong Supabase Storage nếu có image
-if (image) {
-  const imgName = image.split('/').pop(); // Lấy tên file từ đường dẫn ảnh
-  const { error: storageError } = await supabase.storage
-  .from("cabins-image")
-  .remove([imgName]); // Xóa ảnh từ storage dựa trên tên file
-
-  // Kiểm tra nếu có lỗi trong việc xóa ảnh
-  if (storageError) {
-    console.error("❌ Storage error:", storageError); // In ra lỗi nếu có
+  // Kiểm tra nếu có lỗi từ database
+  if (error) {
+    console.error("❌ Database error:", error); // In ra lỗi nếu có
+    return null; // Trả về null nếu có lỗi
   }
-}
 
-// Hiển thị thông tin về dữ liệu xóa, lỗi, và trạng thái
-console.log({ data, error, count, status });
-return data; // Trả về dữ liệu đã xóa
+  // Xóa ảnh trong Supabase Storage nếu có image
+  if (image) {
+    const imgName = image.split("/").pop(); // Lấy tên file từ đường dẫn ảnh
+    const { error: storageError } = await supabase.storage
+      .from("cabins-image")
+      .remove([imgName]); // Xóa ảnh từ storage dựa trên tên file
+
+    // Kiểm tra nếu có lỗi trong việc xóa ảnh
+    if (storageError) {
+      console.error("❌ Storage error:", storageError); // In ra lỗi nếu có
+    }
+  }
+
+  // Hiển thị thông tin về dữ liệu xóa, lỗi, và trạng thái
+  console.log({ data, error, count, status });
+  return data; // Trả về dữ liệu đã xóa
 }

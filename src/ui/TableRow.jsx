@@ -10,11 +10,38 @@ const CellCabin = styled.div`
   gap: 1.2rem;
 `;
 const Img = styled.img`
-  width: 84px;
-  height: 64px;
+  width: 150px;
+  height: max-content;
   object-fit: cover;
   border-radius: 10px;
   box-shadow: 0 2px 10px rgba(16, 24, 40, 0.08);
+`;
+const Button = styled.button`
+  padding: 10px 20px;
+  border: none;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+  width: 100px; /* Đặt chiều rộng cố định cho cả hai nút */
+  margin: 5px; /* Thêm khoảng cách giữa các nút */
+
+  &.edit {
+    background-color: #4caf50; /* Màu xanh cho nút Edit */
+
+    &:hover {
+      background-color: #45a049; /* Màu tối hơn khi hover */
+    }
+  }
+
+  &.delete {
+    background-color: #f44336; /* Màu đỏ cho nút Delete */
+
+    &:hover {
+      background-color: #d32f2f; /* Màu tối hơn khi hover */
+    }
+  }
 `;
 
 export default function CabinRow({ cabin, cols }) {
@@ -65,33 +92,19 @@ export default function CabinRow({ cabin, cols }) {
 
       {/* Cột 5: Actions tách hẳn bên phải */}
       <div style={{ justifySelf: "self-end" }}>
-        <button
+        <Button className="edit">
+          Edit
+        </Button>
+        <Button
           disabled={isDeleteting}
-          className="btn-outline"
-          style={{
-            padding: "0.5rem 1rem",
-            borderRadius: "5px",
-            border: "1px solid #ccc",
-            backgroundColor: "#fff",
-            color: "black",
-            fontWeight: "bold",
-            transition: "background-color 0.3s, color 0.3s",
-          }}
-          onMouseEnter={(e) => {
-            e.target.style.backgroundColor = "#f0f0f0";
-            e.target.style.color = "#333";
-          }}
-          onMouseLeave={(e) => {
-            e.target.style.backgroundColor = "#fff";
-            e.target.style.color = "black";
-          }}
+          className="delete"
           onClick={() => {
             console.log("DELETE id =", id);
             mutate(id);
           }}
         >
-          Delete
-        </button>
+          Delete  
+        </Button>
       </div>
     </Table.Row>
   );
