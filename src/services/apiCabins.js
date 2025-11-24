@@ -11,73 +11,98 @@ export async function apiCabins() {
 }
 
 //Create Cabins và upload ảnh cabins vào storage
-export async function createCabins(newCabin) {
+export async function createEditCabins(newCabin, id) {
+  if (!newCabin) throw new Error("newCabin is required in createEditCabins");
+
   console.log("📦 Received data:", newCabin);
+  console.log("🆔 ID:", id);
 
-  // BƯỚC 1: Xử lý file ảnh
-  // Kiểm tra nếu image là FileList (từ input file) thì lấy file đầu tiên
-  let imageFile = newCabin.image;
-  if (imageFile instanceof FileList) {
-    console.log("⚠️ Converting FileList to File");
-    imageFile = imageFile[0];
+  // BƯỚC 1: Kiểm tra xem có phải đang edit và image đã tồn tại chưa
+  const hasImgPath =
+    typeof newCabin.image === "string" &&
+    newCabin.image?.startsWith?.(supabaseUrl);
+
+  let imagePath = newCabin.image; // Giữ nguyên nếu đã có path
+
+  // BƯỚC 2: Nếu có file mới thì upload
+  if (!hasImgPath) {
+    let imageFile = newCabin.image;
+
+    // Kiểm tra nếu image là FileList thì lấy file đầu tiên
+    if (imageFile instanceof FileList) {
+      console.log("⚠️ Converting FileList to File");
+      imageFile = imageFile[0];
+    }
+
+    // Validate: Đảm bảo có file và có tên file
+    if (!imageFile || !imageFile.name) {
+      throw new Error("Please select an image");
+    }
+
+    console.log("📄 Image file:", imageFile);
+    console.log("📝 File name:", imageFile.name);
+
+    // Tạo tên file unique và đường dẫn
+    const imgName = `${Math.random()}-${imageFile.name}`.replaceAll("/", "");
+    imagePath = `${supabaseUrl}/storage/v1/object/public/cabins-image/${imgName}`;
+
+    console.log("🔗 Image path:", imagePath);
+
+    // Upload ảnh lên Supabase Storage
+    console.log("⬆️ Uploading to storage...");
+    const { data: uploadData, error: storageError } = await supabase.storage
+      .from("cabins-image")
+      .upload(imgName, imageFile, {
+        cacheControl: "3600",
+        upsert: false,
+      });
+
+    if (storageError) {
+      console.error("❌ Storage error:", storageError);
+      throw new Error(`Image upload failed: ${storageError.message}`);
+    }
+
+    console.log("✅ Upload success:", uploadData);
   }
 
-  // Validate: Đảm bảo có file và có tên file
-  if (!imageFile || !imageFile.name) {
-    throw new Error("Please select an image");
-  }
-
-  console.log("📄 Image file:", imageFile);
-  console.log("📝 File name:", imageFile.name);
-
-  // BƯỚC 2: Tạo tên file unique và đường dẫn
-  // Math.random() tạo số ngẫu nhiên tránh trùng tên
-  // replaceAll("/", "") loại bỏ ký tự "/" trong tên file (tránh lỗi path)
-  const imgName = `${Math.random()}-${imageFile.name}`.replaceAll("/", "");
-
-  // Tạo URL public để lưu vào database
-  const imagePath = `${supabaseUrl}/storage/v1/object/public/cabins-image/${imgName}`;
-
-  console.log("🔗 Image path:", imagePath);
-
-  // BƯỚC 3: Upload ảnh lên Supabase Storage
-  console.log("⬆️ Uploading to storage...");
-
-  const { data: uploadData, error: storageError } = await supabase.storage
-    .from("cabins-image") // Tên bucket storage (phải đã tạo trong Supabase)
-    .upload(imgName, imageFile, {
-      cacheControl: "3600",
-      upsert: false, // Không ghi đè file cũ
-    });
-
-  // Nếu upload ảnh thất bại thì dừng luôn, không tạo cabin
-  if (storageError) {
-    console.error("❌ Storage error:", storageError);
-    throw new Error(`Image upload failed: ${storageError.message}`);
-  }
-
-  console.log("✅ Upload success:", uploadData);
-
-  // BƯỚC 4: Tạo cabin record trong database
-  // Destructuring để tách image ra, tránh gửi File object lên database
+  // BƯỚC 3: Chuẩn bị data để insert/update (bỏ image object, chỉ giữ path)
   const { image, ...cabinData } = newCabin;
 
-  const { data, error } = await supabase
-    .from("cabins")
-    .insert([{ ...cabinData, image: imagePath }]) // Gửi imagePath (string) thay vì File object
-    .select("*");
+  let query = supabase.from("cabins");
+  let data, error;
 
-  // BƯỚC 5: Xử lý lỗi khi tạo cabin
-  if (error) {
-    console.error("❌ Database error:", error);
-    // Rollback: Xóa ảnh đã upload nếu tạo cabin thất bại
-    await supabase.storage.from("cabins-image").remove([imgName]);
-    throw new Error(`Cabin could not be created: ${error.message}`);
+  // BƯỚC 4: Create hoặc Edit cabin
+  if (!id) {
+    // CREATE: Thêm cabin mới
+    console.log("➕ Creating new cabin...");
+    ({ data, error } = await query
+      .insert([{ ...cabinData, image: imagePath }])
+      .select()
+      .single());
+  } else {
+    // EDIT: Cập nhật cabin hiện có
+    console.log("✏️ Editing cabin with ID:", id);
+    ({ data, error } = await query
+      .update({ ...cabinData, image: imagePath })
+      .eq("id", id)
+      .select()
+      .single());
   }
 
-  console.log("✅ Cabin created successfully:", data);
+  // BƯỚC 5: Xử lý lỗi
+  if (error) {
+    console.error("❌ Database error:", error);
+    // Rollback: Xóa ảnh đã upload nếu create/edit thất bại (chỉ khi upload ảnh mới)
+    if (!hasImgPath && imagePath) {
+      const imgName = imagePath.split("/").pop();
+      await supabase.storage.from("cabins-image").remove([imgName]);
+    }
+    throw new Error(
+      `Cabin could not be ${id ? "updated" : "created"}: ${error.message}`
+    );
+  }
 
-  // BƯỚC 6: Trả về data cabin đã tạo thành công
+  console.log("✅ Cabin saved successfully:", data);
   return data;
 }
 

@@ -4,6 +4,8 @@ import Table from "../ui/Table";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteCabin } from "../services/apiCabins";
 import toast from "react-hot-toast";
+import { useState } from "react";
+import CreateCabinFormv1 from '../features/cabins/CreateCabinFormv1';
 const CellCabin = styled.div`
   display: flex;
   align-items: center;
@@ -28,10 +30,10 @@ const Button = styled.button`
   margin: 5px; /* Thêm khoảng cách giữa các nút */
 
   &.edit {
-    background-color: #4caf50; /* Màu xanh cho nút Edit */
+    background-color: var(--color-brand-500);
 
     &:hover {
-      background-color: #45a049; /* Màu tối hơn khi hover */
+      background-color: var(--color-brand-700); /* Màu tối hơn khi hover */
     }
   }
 
@@ -45,6 +47,7 @@ const Button = styled.button`
 `;
 
 export default function CabinRow({ cabin, cols }) {
+  const [showForm, setShowForm] = useState(false);
   const { id, name, image, maxCapacity, regularPrice, discount } = cabin;
   const queryClient = useQueryClient();
   const { isLoading: isDeleteting, mutate } = useMutation({
@@ -57,55 +60,58 @@ export default function CabinRow({ cabin, cols }) {
   });
 
   return (
-    <Table.Row columns={cols}>
-      <CellCabin style={{ justifySelf: "self-start" }}>
-        <Img src={image} alt={name} />
-      </CellCabin>
-      <div style={{ justifySelf: "start" }}>
-        <p>{name}</p>
-      </div>
-      <div style={{ justifySelf: "center", textAlign: "center" }}>
-        {maxCapacity}
-      </div>
+    <>
+      <Table.Row columns={cols}>
+        <CellCabin style={{ justifySelf: "self-start" }}>
+          <Img src={image} alt={name} />
+        </CellCabin>
+        <div style={{ justifySelf: "start" }}>
+          <p>{name}</p>
+        </div>
+        <div style={{ justifySelf: "center", textAlign: "center" }}>
+          {maxCapacity}
+        </div>
 
-      <div
-        style={{
-          justifySelf: "center",
-          fontVariantNumeric: "tabular-nums",
-          fontFamily: "'Courier New', monospace",
-          color: "black",
-          fontWeight: "bold",
-        }}
-      >
-        ${regularPrice.toFixed(2)}
-      </div>
-      <div
-        style={{
-          justifySelf: "center",
-          fontFamily: "'Courier New', monospace",
-          color: "red",
-          fontWeight: "bold",
-        }}
-      >
-        {discount ? `$${discount.toFixed(2)}` : "No Discount"}
-      </div>
-
-      {/* Cột 5: Actions tách hẳn bên phải */}
-      <div style={{ justifySelf: "self-end" }}>
-        <Button className="edit">
-          Edit
-        </Button>
-        <Button
-          disabled={isDeleteting}
-          className="delete"
-          onClick={() => {
-            console.log("DELETE id =", id);
-            mutate(id);
+        <div
+          style={{
+            justifySelf: "center",
+            fontVariantNumeric: "tabular-nums",
+            fontFamily: "'Courier New', monospace",
+            color: "black",
+            fontWeight: "bold",
           }}
         >
-          Delete  
-        </Button>
-      </div>
-    </Table.Row>
+          ${regularPrice.toFixed(2)}
+        </div>
+        <div
+          style={{
+            justifySelf: "center",
+            fontFamily: "'Courier New', monospace",
+            color: "red",
+            fontWeight: "bold",
+          }}
+        >
+          {discount ? `$${discount.toFixed(2)}` : "No Discount"}
+        </div>
+
+        {/* Cột 5: Actions tách hẳn bên phải */}
+        <div style={{ justifySelf: "self-end" }}>
+          <Button className="edit" onClick={() => setShowForm((show) => !show)}>
+            Edit
+          </Button>
+          <Button
+            disabled={isDeleteting}
+            className="delete"
+            onClick={() => {
+              console.log("DELETE id =", id);
+              mutate(id);
+            }}
+          >
+            Delete
+          </Button>
+        </div>
+      </Table.Row>
+      {showForm && <CreateCabinFormv1 editCbin={cabin}/>}
+    </>
   );
 }

@@ -1,34 +1,43 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useCreateEditCabin } from "./useCreateCabin"; // Import hook này nếu bạn đã định nghĩa
-import FormRow from "./../../ui/FormRow";
-import Input from "./../../ui/Input";
-import Button from "./../../ui/Button";
-import Form from "./../../ui/Form";
-import { Textarea } from "./../../ui/Textarea";
-import Spinner from "./../../ui/Spinner";
+import FormRow from "../../ui/FormRow";
+import Input from "../../ui/Input";
+import Button from "../../ui/Button";
+import Form from "../../ui/Form";
+import { Textarea } from "../../ui/Textarea";
+import Spinner from "../../ui/Spinner";
 
-function CreateCabinForm({ closeModal }) {
+function CreateCabinFormv1({ editCbin = {} ,closeModal}) {
+  const { id: idEdit, ...valueEdit } = editCbin;
+  console.log(valueEdit);
+  const isEditSeesion = Boolean(idEdit);
+
+  const { register, handleSubmit, formState, reset } = useForm({
+    defaultValues: isEditSeesion ? valueEdit : {},
+  });
+
   const { mutate, isLoading } = useCreateEditCabin();
 
-  const { register, handleSubmit, formState, reset } = useForm();
   const { errors } = formState;
 
   const onSubmit = (data) => {
     console.log("Form data:", data);
-    console.log("Image file:", data.image); // Phải thấy File object
-    
-    mutate(data, {
-      onSuccess: () => {
-        reset();
-        closeModal?.(false);
+    console.log("Image file:", data.image); // File (do setValueAs trả về)
+    mutate(
+      {
+        newCabin : data,
+        id: isEditSeesion ? idEdit : undefined, // create => undefined
       },
-    });
-  };
-  // const onSubmitImg = (data) => {
-  //   mutate({...data , image : data.image.at[0]})
-  // }
+      {
+        onSuccess: () => {
+          reset();
+           closeModal?.();
 
+        },
+      }
+    );
+  };
   const onError = (error) => {
     console.log(error);
   };
@@ -95,29 +104,26 @@ function CreateCabinForm({ closeModal }) {
           accept="image/*"
           disabled={isLoading}
           {...register("image", {
-            required: "This field is required",
-            // Sửa lại đây - lấy file đầu tiên từ FileList
-            setValueAs: (fileList) => {
-              if (!fileList || fileList.length === 0) return null;
-              return fileList[0]; // Trả về File object, không phải FileList
+            validate: (fileList) => {
+              if (!isEditSeesion && (!fileList || fileList.length === 0)) {
+                return "Image is required";
+              }
+              return true;
             },
           })}
         />
       </FormRow>
 
       <FormRow>
-        <Button
-          variation="secondary"
-          type="reset"
-          disabled={isLoading}
-          onClick={() => closeModal((close) => !close)}
-        >
-          Cancel
+        <Button variation="secondary" type="reset" disabled={isLoading}>
+          Reset
         </Button>
-        <Button disabled={isLoading}>Create Cabin</Button>
+        <Button disabled={isLoading}>
+          {isEditSeesion ? "Edit Cabin" : "Create Cabin"}
+        </Button>
       </FormRow>
     </Form>
   );
 }
 
-export default CreateCabinForm;
+export default CreateCabinFormv1;
