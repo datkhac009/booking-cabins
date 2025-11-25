@@ -1,11 +1,10 @@
 // CabinRow.jsx
 import styled from "styled-components";
 import Table from "../ui/Table";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteCabin } from "../services/apiCabins";
-import toast from "react-hot-toast";
 import { useState } from "react";
-import CreateCabinFormv1 from '../features/cabins/CreateCabinFormv1';
+import CreateCabinFormv1 from "../features/cabins/CreateCabinFormv1";
+import { useDeleteCabin } from "../features/cabins/useDeleteCabin";
+import { useCreateCabin } from "../features/cabins/useCreateCabin";
 const CellCabin = styled.div`
   display: flex;
   align-items: center;
@@ -28,7 +27,13 @@ const Button = styled.button`
   transition: background-color 0.3s;
   width: 100px; /* Đặt chiều rộng cố định cho cả hai nút */
   margin: 5px; /* Thêm khoảng cách giữa các nút */
+ &.copy {
+    background-color: #00ce4174; /* Màu đỏ cho nút Delete */
 
+    &:hover {
+      background-color: #00ff5174; /* Màu tối hơn khi hover */
+    }
+  }
   &.edit {
     background-color: var(--color-brand-500);
 
@@ -49,16 +54,17 @@ const Button = styled.button`
 export default function CabinRow({ cabin, cols }) {
   const [showForm, setShowForm] = useState(false);
   const { id, name, image, maxCapacity, regularPrice, discount } = cabin;
-  const queryClient = useQueryClient();
-  const { isLoading: isDeleteting, mutate } = useMutation({
-    mutationFn: (id) => deleteCabin(id),
-    onSuccess: () => {
-      toast.success("Cabin deleted successfully!");
-      queryClient.invalidateQueries({ queryKey: ["cabins"] });
-    },
-    onError: (e) => alert(e.message),
-  });
-
+  const { isDeleting, deleteCabin } = useDeleteCabin();
+  const { CreateCabin, isLoading } = useCreateCabin();
+  function handleCopy() {
+    CreateCabin({
+      name: `Copy Name : ${name}`,
+      image,
+      maxCapacity,
+      regularPrice,
+      discount,
+    });
+  }
   return (
     <>
       <Table.Row columns={cols}>
@@ -91,27 +97,29 @@ export default function CabinRow({ cabin, cols }) {
             fontWeight: "bold",
           }}
         >
-          {discount ? `$${discount.toFixed(2)}` : "No Discount"}
+          {discount ? `$${discount.toFixed(2)}` : <span>&mdash;</span>}
         </div>
 
         {/* Cột 5: Actions tách hẳn bên phải */}
+
         <div style={{ justifySelf: "self-end" }}>
-          <Button className="edit" onClick={() => setShowForm((show) => !show)}>
+          <Button className="copy" disabled={isLoading} onClick={ () => handleCopy() }>Copy</Button>
+          <Button className="edit" disabled={isLoading} onClick={() => setShowForm((show) => !show)}>
             Edit
           </Button>
           <Button
-            disabled={isDeleteting}
+            disabled={isDeleting}
             className="delete"
             onClick={() => {
               console.log("DELETE id =", id);
-              mutate(id);
+              deleteCabin(id);
             }}
           >
             Delete
           </Button>
         </div>
       </Table.Row>
-      {showForm && <CreateCabinFormv1 editCbin={cabin}/>}
+      {showForm && <CreateCabinFormv1 editCbin={cabin} />}
     </>
   );
 }

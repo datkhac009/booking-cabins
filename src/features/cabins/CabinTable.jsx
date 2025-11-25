@@ -1,24 +1,18 @@
-import { useQuery } from "@tanstack/react-query";
-import { apiCabins } from "../../services/apiCabins";
+
 import Spinner from "./../../ui/Spinner";
 import Table from "./../../ui/Table";
 import CabinRow from "../../ui/TableRow";
-import { Toaster } from "react-hot-toast";
+import { useCabins } from './useCabins';
 
 export default function CabinTable() {
-  const {data:cabins , isLoading , error} = useQuery({
-    queryKey: ['cabins'],
-    queryFn: apiCabins,
-  });
-  if(error) throw new Error("Error Cabin");
+  const {isLoading, cabins } = useCabins()
   
   console.log(cabins);
   if(isLoading) return <Spinner />
   return (
     <div>
-      <Toaster position="top-center" reverseOrder={true} />
       <Table>
-        <Table.Header columns="2.4fr 1.2fr 1fr 1fr 1fr 1fr">
+        <Table.Header columns="2.4fr 1.2fr 1fr 1fr 1fr 1fr ">
           <span style={{ justifySelf: "self-start" }}></span>
           <span style={{ justifySelf: "start" }}>Cabin</span>
           <span style={{ justifySelf: "center" }}>Capacity</span>
@@ -43,4 +37,5 @@ export default function CabinTable() {
       </Table>
     </div>
   );
+  
 }

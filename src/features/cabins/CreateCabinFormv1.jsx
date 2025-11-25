@@ -1,14 +1,15 @@
 import React from "react";
-import { useForm } from "react-hook-form";
-import { useCreateEditCabin } from "./useCreateCabin"; // Import hook này nếu bạn đã định nghĩa
 import FormRow from "../../ui/FormRow";
 import Input from "../../ui/Input";
 import Button from "../../ui/Button";
 import Form from "../../ui/Form";
 import { Textarea } from "../../ui/Textarea";
 import Spinner from "../../ui/Spinner";
+import { useForm } from "react-hook-form";
+import { useCreateCabin } from "./useCreateCabin";
+import { useEditCabin } from "./useEditCabin";
 
-function CreateCabinFormv1({ editCbin = {} ,closeModal}) {
+function CreateCabinFormv1({ editCbin = {}, closeModal }) {
   const { id: idEdit, ...valueEdit } = editCbin;
   console.log(valueEdit);
   const isEditSeesion = Boolean(idEdit);
@@ -17,26 +18,35 @@ function CreateCabinFormv1({ editCbin = {} ,closeModal}) {
     defaultValues: isEditSeesion ? valueEdit : {},
   });
 
-  const { mutate, isLoading } = useCreateEditCabin();
+  const { CreateCabin, isCreating } = useCreateCabin();
+  const { editCabin, isEditing } = useEditCabin();
 
   const { errors } = formState;
-
+  const isLoading = isCreating || isEditing;
   const onSubmit = (data) => {
     console.log("Form data:", data);
-    console.log("Image file:", data.image); // File (do setValueAs trả về)
-    mutate(
-      {
-        newCabin : data,
-        id: isEditSeesion ? idEdit : undefined, // create => undefined
-      },
-      {
+    console.log("Image file:", data.image);
+
+    if (isEditSeesion) {
+      // EDIT
+      editCabin(
+        { newCabin: data, id: idEdit },
+        {
+          onSuccess: () => {
+            reset();
+            closeModal?.();
+          },
+        }
+      );
+    } else {
+      // CREATE
+      CreateCabin(data, {
         onSuccess: () => {
           reset();
-           closeModal?.();
-
+          closeModal?.();
         },
-      }
-    );
+      });
+    }
   };
   const onError = (error) => {
     console.log(error);

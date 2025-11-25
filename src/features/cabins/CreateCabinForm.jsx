@@ -1,6 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useCreateEditCabin } from "./useCreateCabin"; // Import hook này nếu bạn đã định nghĩa
+import { useCreateCabin } from "./useCreateCabin"; // Import hook này nếu bạn đã định nghĩa
 import FormRow from "./../../ui/FormRow";
 import Input from "./../../ui/Input";
 import Button from "./../../ui/Button";
@@ -9,7 +9,7 @@ import { Textarea } from "./../../ui/Textarea";
 import Spinner from "./../../ui/Spinner";
 
 function CreateCabinForm({ closeModal }) {
-  const { mutate, isLoading } = useCreateEditCabin();
+  const { mutate, isLoading } = useCreateCabin();
 
   const { register, handleSubmit, formState, reset } = useForm();
   const { errors } = formState;
@@ -30,7 +30,7 @@ function CreateCabinForm({ closeModal }) {
   // }
 
   const onError = (error) => {
-    console.log(error);
+    (error);
   };
   if (isLoading) return <Spinner />;
   return (
