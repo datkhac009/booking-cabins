@@ -30,7 +30,7 @@ function CreateCabinForm({ closeModal }) {
   // }
 
   const onError = (error) => {
-    (error);
+    console.log(error);
   };
   if (isLoading) return <Spinner />;
   return (
