@@ -16,8 +16,12 @@ const Form = styled.form`
   ${(props) =>
     props.type === "modal" &&
     css`
-      width: 50%;
-      max-width: 96rem; /* đồng bộ với table/container */
+      width: 80rem;
+      max-width: 90vw;
+      background-color: var(--color-grey-0);
+      border-radius: var(--border-radius-md);
+      box-shadow: var(--shadow-lg);
+      padding: 0;
     `}
 
   overflow: hidden;

@@ -1,4 +1,5 @@
 import React from "react";
+import styled from "styled-components";
 import FormRow from "../../ui/FormRow";
 import Input from "../../ui/Input";
 import Button from "../../ui/Button";
@@ -8,6 +9,24 @@ import Spinner from "../../ui/Spinner";
 import { useForm } from "react-hook-form";
 import { useCreateCabin } from "./useCreateCabin";
 import { useEditCabin } from "./useEditCabin";
+
+const FormHeader = styled.div`
+  background: linear-gradient(135deg, var(--color-brand-600) 0%, var(--color-brand-700) 100%);
+  color: white;
+  padding: 2rem 2.4rem;
+  margin: 0;
+  border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
+  
+  h2 {
+    font-size: 2rem;
+    font-weight: 600;
+    margin: 0;
+  }
+`;
+
+const FormContent = styled.div`
+  padding: 2.4rem;
+`;
 
 function CreateCabinFormv1({ editCbin = {}, closeModal }) {
   const { id: idEdit, ...valueEdit } = editCbin;
@@ -54,14 +73,19 @@ function CreateCabinFormv1({ editCbin = {}, closeModal }) {
   if (isLoading) return <Spinner />;
   return (
     <Form onSubmit={handleSubmit(onSubmit, onError)} type="modal">
-      <FormRow label="Cabin Name" error={errors?.name?.message}>
-        <Input
-          type="text"
-          id="nameCabin"
-          disabled={isLoading}
-          {...register("name", { required: "This field is required" })}
-        />
-      </FormRow>
+      <FormHeader>
+        <h2>{isEditSeesion ? "Edit Cabin" : "Add new Cabin"}</h2>
+      </FormHeader>
+      
+      <FormContent>
+        <FormRow label="Cabin Name" error={errors?.name?.message}>
+          <Input
+            type="text"
+            id="nameCabin"
+            disabled={isLoading}
+            {...register("name", { required: "This field is required" })}
+          />
+        </FormRow>
 
       <FormRow label="Maximum Capacity" error={errors?.maxCapacity?.message}>
         <Input
@@ -132,6 +156,7 @@ function CreateCabinFormv1({ editCbin = {}, closeModal }) {
           {isEditSeesion ? "Edit Cabin" : "Create Cabin"}
         </Button>
       </FormRow>
+      </FormContent>
     </Form>
   );
 }

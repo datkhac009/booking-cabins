@@ -5,6 +5,7 @@ import { useState } from "react";
 import CreateCabinFormv1 from "../features/cabins/CreateCabinFormv1";
 import { useDeleteCabin } from "../features/cabins/useDeleteCabin";
 import { useCreateCabin } from "../features/cabins/useCreateCabin";
+import { HiSquare2Stack, HiPencil, HiTrash } from "react-icons/hi2";
 const CellCabin = styled.div`
   display: flex;
   align-items: center;
@@ -18,36 +19,52 @@ const Img = styled.img`
   box-shadow: 0 2px 10px rgba(16, 24, 40, 0.08);
 `;
 const Button = styled.button`
-  padding: 10px 20px;
+  padding: 8px;
   border: none;
-  color: white;
-  font-size: 16px;
+  background-color: transparent;
   cursor: pointer;
   border-radius: 5px;
-  transition: background-color 0.3s;
-  width: 100px; /* Đặt chiều rộng cố định cho cả hai nút */
-  margin: 5px; /* Thêm khoảng cách giữa các nút */
- &.copy {
-    background-color: #00ce4174; /* Màu đỏ cho nút Delete */
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 
-    &:hover {
-      background-color: #00ff5174; /* Màu tối hơn khi hover */
-    }
-  }
-  &.edit {
-    background-color: var(--color-brand-500);
-
-    &:hover {
-      background-color: var(--color-brand-700); /* Màu tối hơn khi hover */
-    }
+  &:hover {
+    background-color: var(--color-grey-100);
   }
 
-  &.delete {
-    background-color: #f44336; /* Màu đỏ cho nút Delete */
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 
-    &:hover {
-      background-color: #d32f2f; /* Màu tối hơn khi hover */
-    }
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  &.copy svg {
+    color: #10b981;
+  }
+
+  &.edit svg {
+    color: var(--color-brand-600);
+  }
+
+  &.delete svg {
+    color: #ef4444;
+  }
+
+  &.copy:hover {
+    background-color: #d1fae5;
+  }
+
+  &.edit:hover {
+    background-color: var(--color-brand-100);
+  }
+
+  &.delete:hover {
+    background-color: #fee2e2;
   }
 `;
 
@@ -102,10 +119,12 @@ export default function CabinRow({ cabin, cols }) {
 
         {/* Cột 5: Actions tách hẳn bên phải */}
 
-        <div style={{ justifySelf: "self-end" }}>
-          <Button className="copy" disabled={isLoading} onClick={ () => handleCopy() }>Copy</Button>
-          <Button className="edit" disabled={isLoading} onClick={() => setShowForm((show) => !show)}>
-            Edit
+        <div style={{ justifySelf: "self-end", display: "flex", gap: "4px" }}>
+          <Button className="copy" disabled={isLoading} onClick={() => handleCopy()} title="Copy cabin">
+            <HiSquare2Stack />
+          </Button>
+          <Button className="edit" disabled={isLoading} onClick={() => setShowForm((show) => !show)} title="Edit cabin">
+            <HiPencil />
           </Button>
           <Button
             disabled={isDeleting}
@@ -114,8 +133,9 @@ export default function CabinRow({ cabin, cols }) {
               console.log("DELETE id =", id);
               deleteCabin(id);
             }}
+            title="Delete cabin"
           >
-            Delete
+            <HiTrash />
           </Button>
         </div>
       </Table.Row>
