@@ -5,7 +5,7 @@ import Input from "../../ui/Input";
 import Button from "../../ui/Button";
 import Form from "../../ui/Form";
 import { Textarea } from "../../ui/Textarea";
-import Spinner from "../../ui/Spinner";
+import SpinnerMini from "../../ui/SpinnerMini";
 import { useForm } from "react-hook-form";
 import { useCreateCabin } from "./useCreateCabin";
 import { useEditCabin } from "./useEditCabin";
@@ -37,7 +37,7 @@ function CreateCabinFormv1({ editCbin = {}, closeModal }) {
     defaultValues: isEditSeesion ? valueEdit : {},
   });
 
-  const { CreateCabin, isCreating } = useCreateCabin();
+  const { CreateCabin, isLoading: isCreating } = useCreateCabin();
   const { editCabin, isEditing } = useEditCabin();
 
   const { errors } = formState;
@@ -70,7 +70,7 @@ function CreateCabinFormv1({ editCbin = {}, closeModal }) {
   const onError = (error) => {
     console.log(error);
   };
-  if (isLoading) return <Spinner />;
+
   return (
     <Form onSubmit={handleSubmit(onSubmit, onError)} type="modal">
       <FormHeader>
@@ -101,14 +101,14 @@ function CreateCabinFormv1({ editCbin = {}, closeModal }) {
 
       <FormRow label="Regular Price" error={errors?.regularPrice?.message}>
         <Input
-          type="text"
+          type="number"
           id="regularPrice"
           disabled={isLoading}
           {...register("regularPrice", {
             required: "This field is required",
-            validate: (value) => value >= 0 || "Price should be at least 1",
+            min: { value: 1, message: "Price should be at least 1" },
           })}
-        />
+        />      
       </FormRow>
 
       <FormRow label="Discount" error={errors?.discount?.message}>
@@ -153,7 +153,7 @@ function CreateCabinFormv1({ editCbin = {}, closeModal }) {
           Reset
         </Button>
         <Button disabled={isLoading}>
-          {isEditSeesion ? "Edit Cabin" : "Create Cabin"}
+          {isLoading ? <SpinnerMini /> : isEditSeesion ? "Edit Cabin" : "Create Cabin"}
         </Button>
       </FormRow>
       </FormContent>

@@ -3,6 +3,37 @@ import Spinner from "./../../ui/Spinner";
 import Table from "./../../ui/Table";
 import CabinRow from "../../ui/TableRow";
 import { useCabins } from './useCabins';
+import styled from "styled-components";
+
+const TableWrapper = styled.div`
+  max-height: 60vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-radius: 12px;
+  
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: var(--color-grey-100);
+    border-radius: 4px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: var(--color-grey-400);
+    border-radius: 4px;
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background: var(--color-grey-500);
+  }
+  
+  /* Ensure border radius clips content */
+  & > * {
+    border-radius: 12px;
+  }
+`;
 
 export default function CabinTable() {
   const {isLoading, cabins } = useCabins()
@@ -10,7 +41,7 @@ export default function CabinTable() {
   console.log(cabins);
   if(isLoading) return <Spinner />
   return (
-    <div>
+    <TableWrapper>
       <Table>
         <Table.Header columns="2.4fr 1.2fr 1fr 1fr 1fr 1fr ">
           <span style={{ justifySelf: "self-start" }}></span>
@@ -35,7 +66,7 @@ export default function CabinTable() {
           )}
         </Table.Body>
       </Table>
-    </div>
+    </TableWrapper>
   );
   
 }
