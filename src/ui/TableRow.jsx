@@ -6,6 +6,8 @@ import CreateCabinFormv1 from "../features/cabins/CreateCabinFormv1";
 import { useDeleteCabin } from "../features/cabins/useDeleteCabin";
 import { useCreateCabin } from "../features/cabins/useCreateCabin";
 import { HiSquare2Stack, HiPencil, HiTrash } from "react-icons/hi2";
+import Modal from "../ui/Modal";
+import ConfirmDelete from "../ui/ConfirmDelete";
 const CellCabin = styled.div`
   display: flex;
   align-items: center;
@@ -68,8 +70,9 @@ const Button = styled.button`
   }
 `;
 
-export default function CabinRow({ cabin, cols }) {
+export default function CabinRow({ cabin }) {
   const [showForm, setShowForm] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const { id, name, image, maxCapacity, regularPrice, discount } = cabin;
   const { isDeleting, deleteCabin } = useDeleteCabin();
   const { CreateCabin, isLoading } = useCreateCabin();
@@ -84,7 +87,7 @@ export default function CabinRow({ cabin, cols }) {
   }
   return (
     <>
-      <Table.Row columns={cols}>
+      <Table.Row>
         <CellCabin style={{ justifySelf: "self-start" }}>
           <Img src={image} alt={name} />
         </CellCabin>
@@ -129,17 +132,31 @@ export default function CabinRow({ cabin, cols }) {
           <Button
             disabled={isDeleting}
             className="delete"
-            onClick={() => {
-              console.log("DELETE id =", id);
-              deleteCabin(id);
-            }}
+            onClick={() => setShowDeleteConfirm(true)}
             title="Delete cabin"
           >
             <HiTrash />
           </Button>
         </div>
       </Table.Row>
-      {showForm && <CreateCabinFormv1 editCbin={cabin} />}
+      {showForm && (
+        <Modal closeModal={() => setShowForm(false)}>
+          <CreateCabinFormv1 editCbin={cabin} closeModal={() => setShowForm(false)} />
+        </Modal>
+      )}
+      {showDeleteConfirm && (
+        <Modal closeModal={() => setShowDeleteConfirm(false)}>
+          <ConfirmDelete
+            resource={`cabin ${name}`}
+            onConfirm={() => {
+              deleteCabin(id);
+              setShowDeleteConfirm(false);
+            }}
+            disabled={isDeleting}
+            closeModal={() => setShowDeleteConfirm(false)}
+          />
+        </Modal>
+      )}
     </>
   );
 }

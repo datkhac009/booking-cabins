@@ -4,6 +4,7 @@ import Table from "./../../ui/Table";
 import CabinRow from "../../ui/TableRow";
 import { useCabins } from './useCabins';
 import styled from "styled-components";
+import Menus from "../../ui/Menus";
 
 const TableWrapper = styled.div`
   max-height: 60vh;
@@ -42,30 +43,24 @@ export default function CabinTable() {
   if(isLoading) return <Spinner />
   return (
     <TableWrapper>
-      <Table>
-        <Table.Header columns="2.4fr 1.2fr 1fr 1fr 1fr 1fr ">
+    <Menus>
+
+      <Table columns="2.4fr 1.2fr 1fr 1fr 1fr 1fr">
+        <Table.Header>
           <span style={{ justifySelf: "self-start" }}></span>
           <span style={{ justifySelf: "start" }}>Cabin</span>
           <span style={{ justifySelf: "center" }}>Capacity</span>
           <span style={{ justifySelf: "center" }}>Price</span>
           <span style={{ justifySelf: "center" }}>Discount</span>
           <span style={{ justifySelf: "self-end" }}></span>
-          <span /> {/* cột actions */}
         </Table.Header>
-        <Table.Body>
-          {cabins.length === 0 ? (
-            <Table.Empty>No cabins found</Table.Empty>
-          ) : (
-            cabins.map((c) => (
-              <CabinRow
-                key={c.id}
-                cols="2.4fr 1.2fr 1fr 1fr 1fr 1fr"
-                cabin={c}
-              />
-            ))
-          )}
-        </Table.Body>
+        
+        <Table.Body
+          data={cabins}
+          render={(cabin) => <CabinRow key={cabin.id} cabin={cabin} />}
+        />
       </Table>
+    </Menus>
     </TableWrapper>
   );
   

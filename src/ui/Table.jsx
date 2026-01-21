@@ -1,5 +1,8 @@
 // src/ui/Table.jsx
 import styled from "styled-components";
+import { createContext, useContext } from "react";
+
+const TableContext = createContext();
 
 const StyledTable = styled.div`
   background: var(--color-grey-0);
@@ -88,29 +91,42 @@ const Empty = styled.p`
 `;
 
 /* ==== Public API ==== */
-function Table({ children }) {
-  return <StyledTable>{children}</StyledTable>;
-}
-Table.Header = function Header({ children, columns, columnsMobile }) {
+function Table({ children, columns }) {
   return (
-    <StyledHeader columns={columns} columnsMobile={columnsMobile}>
+    <TableContext.Provider value={{ columns }}>
+      <StyledTable>{children}</StyledTable>
+    </TableContext.Provider>
+  );
+}
+
+Table.Header = function Header({ children }) {
+  const { columns } = useContext(TableContext);
+  return (
+    <StyledHeader columns={columns}>
       {children}
     </StyledHeader>
   );
 };
-Table.Body = function Body({ children }) {
-  return <StyledBody>{children}</StyledBody>;
+
+Table.Body = function Body({ data, render }) {
+  if (!data?.length) return <Empty>No data to show at the moment</Empty>;
+  
+  return <StyledBody>{data.map(render)}</StyledBody>;
 };
-Table.Row = function Row({ children, columns, columnsMobile }) {
+
+Table.Row = function Row({ children }) {
+  const { columns } = useContext(TableContext);
   return (
-    <StyledRow columns={columns} columnsMobile={columnsMobile}>
+    <StyledRow columns={columns}>
       {children}
     </StyledRow>
   );
 };
+
 Table.Footer = function TFooter({ children }) {
   return <Footer>{children}</Footer>;
 };
+
 Table.Empty = Empty;
 
 export default Table;
