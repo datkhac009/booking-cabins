@@ -79,6 +79,10 @@ function Menus({ children }) {
   );
 }
 
+function Menu({ children }) {
+  return <StyledMenu>{children}</StyledMenu>;
+}
+
 function Toggle({ id }) {
   const { openId, open, close } = useContext(MenusContext);
 
@@ -96,17 +100,28 @@ function List({ id, children }) {
   const { openId } = useContext(MenusContext);
 
   if (openId !== id) return null;
-  return createPortal(<StyledList>{children}</StyledList>, document.body);
+  return createPortal(<StyledList position= {{x :20,y:20}}>{children}</StyledList>, document.body);
 }
 
-function Button({ children }) {
+function Button({ children, icon, onClick }) {
+  const { close } = useContext(MenusContext);
+
+  function handleClick() {
+    onClick?.();
+    close();
+  }
+
   return (
     <li>
-      <StyledButton>{children}</StyledButton>
+      <StyledButton onClick={handleClick}>
+        {icon}
+        <span>{children}</span>
+      </StyledButton>
     </li>
   );
 }
 
+Menus.Menu = Menu;
 Menus.Toggle = Toggle;
 Menus.List = List;
 Menus.Button = Button;

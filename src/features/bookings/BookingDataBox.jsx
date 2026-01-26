@@ -1,9 +1,8 @@
 import styled from 'styled-components';
-import { format } from 'date-fns';
+import { format, isToday } from 'date-fns';
 
 import { box } from 'styles/styles';
 import { formatDistanceFromNow } from 'utils/helpers';
-import { isToday } from 'date-fns/esm';
 import { formatCurrency } from 'utils/helpers';
 import {
   HiOutlineChatBubbleBottomCenterText,

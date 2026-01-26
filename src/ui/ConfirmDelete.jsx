@@ -4,16 +4,17 @@ import Heading from "./Heading";
 import SpinnerMini from "./SpinnerMini";
 
 const StyledConfirmDelete = styled.div`
-  width: 50rem;
+  width: 40rem;
   display: flex;
   flex-direction: column;
-  gap: 1.6rem;
-  padding: 3rem;
+  gap: 1.2rem;
+  padding: 2rem;
 
   & p {
     color: var(--color-grey-500);
-    margin-bottom: 1.2rem;
-    line-height: 1.6;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+    font-size: 1.4rem;
   }
 
   & div {
@@ -30,7 +31,7 @@ function ConfirmDelete({ resource, onConfirm, disabled, closeModal }) {
 
   return (
     <StyledConfirmDelete>
-      <Heading type="h3">Delete {resource}</Heading>
+      <Heading as="h3">Delete {resource}</Heading>
       <p>
         Are you sure you want to delete this {resource} permanently? This action
         cannot be undone.
