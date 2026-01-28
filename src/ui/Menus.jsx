@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { HiEllipsisHorizontal } from "react-icons/hi2";
 import styled from "styled-components";
@@ -30,13 +30,19 @@ const StyledToggle = styled.button`
 
 const StyledList = styled.ul`
   position: fixed;
+  z-index: 1000;
 
   background-color: var(--color-grey-0);
   box-shadow: var(--shadow-md);
   border-radius: var(--border-radius-md);
+  padding: 0.4rem;
 
-  right: ${(props) => props.position.x}px;
+  left: ${(props) => props.position.x}px;
   top: ${(props) => props.position.y}px;
+  transform: translateX(-100%);
+  margin-top: 0.2rem;
+
+  min-width: 18rem;
 `;
 
 const StyledButton = styled.button`
@@ -44,15 +50,16 @@ const StyledButton = styled.button`
   text-align: left;
   background: none;
   border: none;
-  padding: 1.2rem 2.4rem;
+  padding: 1.2rem 1.6rem;
   font-size: 1.4rem;
   transition: all 0.2s;
 
   display: flex;
   align-items: center;
-  gap: 1.6rem;
+  gap: 1.2rem;
+  border-radius: 8px;
 
-  &:hover {
+  &:hover {         
     background-color: var(--color-grey-50);
   }
 
@@ -68,12 +75,15 @@ const MenusContext = createContext();
 
 function Menus({ children }) {
   const [openId, setOpenId] = useState("");
+  const [position, setPosition] = useState({ x: 0, y: 0 });
 
-  const open = setOpenId;
+  const open = (id) => setOpenId(id);
   const close = () => setOpenId("");
 
   return (
-    <MenusContext.Provider value={{ openId, open, close }}>
+    <MenusContext.Provider
+      value={{ openId, open, close, position, setPosition }}
+    >
       {children}
     </MenusContext.Provider>
   );
@@ -84,11 +94,23 @@ function Menu({ children }) {
 }
 
 function Toggle({ id }) {
-  const { openId, open, close } = useContext(MenusContext);
+  const { openId, open, close, setPosition } = useContext(MenusContext);
 
-  function handleClick() {
-    openId === "" || openId !== id ? open(id) : close();
+  function handleClick(e) {
+    e.stopPropagation();
+
+    const rect = e.currentTarget.getBoundingClientRect();
+
+    // xổ ngay dưới dấu "..."
+    const x = rect.right;
+    const y = rect.bottom + 8;
+
+    if (openId === "" || openId !== id) {
+      setPosition({ x, y });
+      open(id);
+    } else close();
   }
+
   return (
     <StyledToggle onClick={handleClick}>
       <HiEllipsisHorizontal />
@@ -97,23 +119,50 @@ function Toggle({ id }) {
 }
 
 function List({ id, children }) {
-  const { openId } = useContext(MenusContext);
+  const { openId, close, position } = useContext(MenusContext);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    if (openId !== id) return;
+
+    function handleClickOutside(e) {
+      if (ref.current && !ref.current.contains(e.target)) close();
+    }
+    function handleEsc(e) {
+      if (e.key === "Escape") close();
+    }
+
+    window.addEventListener("mousedown", handleClickOutside, true);
+    window.addEventListener("keydown", handleEsc);
+
+    return () => {
+      window.removeEventListener("mousedown", handleClickOutside, true);
+      window.removeEventListener("keydown", handleEsc);
+    };
+  }, [openId, id, close]);
 
   if (openId !== id) return null;
-  return createPortal(<StyledList position= {{x :20,y:20}}>{children}</StyledList>, document.body);
+
+  return createPortal(
+    <StyledList ref={ref} position={position}>
+      {children}
+    </StyledList>,
+    document.body,
+  );
 }
 
-function Button({ children, icon, onClick }) {
+function Button({ children, icon, onClick, disabled }) {
   const { close } = useContext(MenusContext);
 
   function handleClick() {
+    if (disabled) return;
     onClick?.();
     close();
   }
 
   return (
     <li>
-      <StyledButton onClick={handleClick}>
+      <StyledButton onClick={handleClick} disabled={disabled}>
         {icon}
         <span>{children}</span>
       </StyledButton>
