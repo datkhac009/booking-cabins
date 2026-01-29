@@ -38,7 +38,7 @@ const Button = styled.button`
   right: 1.9rem;
 
   &:hover {
-    background-color: var(--color-grey-100);
+    background-color: rgba(255, 255, 255, 0.15);
   }
 
   & svg {
@@ -47,11 +47,12 @@ const Button = styled.button`
     /* Sometimes we need both */
     /* fill: var(--color-grey-500);
     stroke: var(--color-grey-500); */
-    color: var(--color-grey-500);
+    color: #fff;
   }
 `;
 function Modal({children ,closeModal}) {
   return (
+    
     <Overlay onClick={closeModal}>
       <StyledModal onClick={(e) => e.stopPropagation()}>
         <Button onClick={closeModal}>

@@ -1,35 +1,35 @@
-
 import Spinner from "./../../ui/Spinner";
 import Table from "./../../ui/Table";
 import CabinRow from "../../ui/TableRow";
-import { useCabins } from './useCabins';
+import { useCabins } from "./useCabins";
 import styled from "styled-components";
 import Menus from "../../ui/Menus";
+import { useSearchParams } from "react-router-dom";
 
 const TableWrapper = styled.div`
   max-height: 60vh;
   overflow-y: auto;
   overflow-x: hidden;
   border-radius: 12px;
-  
+
   &::-webkit-scrollbar {
     width: 8px;
   }
-  
+
   &::-webkit-scrollbar-track {
     background: var(--color-grey-100);
     border-radius: 4px;
   }
-  
+
   &::-webkit-scrollbar-thumb {
     background: var(--color-grey-400);
     border-radius: 4px;
   }
-  
+
   &::-webkit-scrollbar-thumb:hover {
     background: var(--color-grey-500);
   }
-  
+
   /* Ensure border radius clips content */
   & > * {
     border-radius: 12px;
@@ -37,31 +37,39 @@ const TableWrapper = styled.div`
 `;
 
 export default function CabinTable() {
-  const {isLoading, cabins } = useCabins()
-  
+  const { isLoading, cabins } = useCabins();
+  const [searchParams] = useSearchParams();
+
   console.log(cabins);
-  if(isLoading) return <Spinner />
+  if (isLoading) return <Spinner />;
+
+  const filterValue = searchParams.get("discount") || "all";
+  let filteredCabins;
+  if (filterValue === "all") filteredCabins = cabins;
+  else if (filterValue === "no-discount")
+    filteredCabins = cabins.filter((cabin) => cabin.discount === 0);
+  else if (filterValue === "with-discount")
+    filteredCabins = cabins.filter((cabin) => cabin.discount > 0);
+
   return (
     <TableWrapper>
-    <Menus>
+      <Menus>
+        <Table columns="2.4fr 1.2fr 1fr 1fr 1fr 1fr">
+          <Table.Header>
+            <span style={{ justifySelf: "self-start" }}></span>
+            <span style={{ justifySelf: "start" }}>Cabin</span>
+            <span style={{ justifySelf: "center" }}>Capacity</span>
+            <span style={{ justifySelf: "center" }}>Price</span>
+            <span style={{ justifySelf: "center" }}>Discount</span>
+            <span style={{ justifySelf: "self-end" }}></span>
+          </Table.Header>
 
-      <Table columns="2.4fr 1.2fr 1fr 1fr 1fr 1fr">
-        <Table.Header>
-          <span style={{ justifySelf: "self-start" }}></span>
-          <span style={{ justifySelf: "start" }}>Cabin</span>
-          <span style={{ justifySelf: "center" }}>Capacity</span>
-          <span style={{ justifySelf: "center" }}>Price</span>
-          <span style={{ justifySelf: "center" }}>Discount</span>
-          <span style={{ justifySelf: "self-end" }}></span>
-        </Table.Header>
-        
-        <Table.Body
-          data={cabins}
-          render={(cabin) => <CabinRow key={cabin.id} cabin={cabin} />}
-        />
-      </Table>
-    </Menus>
+          <Table.Body
+            data={filteredCabins}
+            render={(cabin) => <CabinRow key={cabin.id} cabin={cabin} />}
+          />
+        </Table>
+      </Menus>
     </TableWrapper>
   );
-  
 }
