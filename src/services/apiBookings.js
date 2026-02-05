@@ -2,7 +2,11 @@ import { getToday } from "../utils/helpers";
 import { supabase } from "./supbase";
 
 export async function getBooking() {
-  const [data, error] = await supabase.from("bookings").select("*");
+  const { data, error } = await supabase
+    .from("bookings")
+    .select("*")
+    .order("created_at", { ascending: false });
+    
   if (error) {
     console.error(error);
     throw new Error("Bookings could not get loaded");

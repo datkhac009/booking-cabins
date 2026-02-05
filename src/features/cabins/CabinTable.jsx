@@ -42,6 +42,7 @@ export default function CabinTable() {
 
   console.log(cabins);
   if (isLoading) return <Spinner />;
+
   
   //Filter
   const filterValue = searchParams.get("discount") || "all";
@@ -51,15 +52,17 @@ export default function CabinTable() {
     filteredCabins = cabins.filter((cabin) => cabin.discount === 0);
   else if (filterValue === "with-discount")
     filteredCabins = cabins.filter((cabin) => cabin.discount > 0);
+  
   //Sort
   const sortBy = searchParams.get("sortBy") || "startData-asc";
   const [field, direction] = sortBy.split("-");
   const modifier = direction === "asc" ? 1 : -1;
-  console.log("🚀 ~ CabinTable ~ modifier:", modifier)
+  console.log("🚀 ~ CabinTable ~ modifier:", modifier);
   const sortedCabins = filteredCabins.sort(
     (a, b) => (a[field] - b[field]) * modifier,
   );
-  console.log("🚀 ~ CabinTable ~ sortedCabins:", sortedCabins)
+  console.log("🚀 ~ CabinTable ~ sortedCabins:", sortedCabins);
+  
   return (
     <TableWrapper>
       <Menus>

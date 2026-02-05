@@ -35,8 +35,8 @@ const CommonRow = styled.div`
 `;
 
 const StyledHeader = styled(CommonRow)`
-    position: sticky;
- top: 0;
+  position: sticky;
+  top: 0;
   z-index: 1;
   background-color: var(--color-grey-50);
   border-bottom: 1px solid var(--color-grey-100);

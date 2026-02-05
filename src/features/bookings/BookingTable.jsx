@@ -30,7 +30,7 @@ import Table from '../../ui/Table';
 
 function BookingTable() {
   const { bookings, count, isLoading } =  useBooking();
-
+console.log(bookings)
   if (isLoading) return <Spinner />;
   if (!bookings) return <Empty resource={'bookings'} />;
 

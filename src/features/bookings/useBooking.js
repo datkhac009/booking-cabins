@@ -10,6 +10,7 @@ function useBooking() {
     queryKey: ["bookings"],
     queryFn: getBooking,
   });
+
   return { bookings, isLoading, error };
 }
 

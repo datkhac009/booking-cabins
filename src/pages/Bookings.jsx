@@ -7,7 +7,6 @@ function Bookings() {
     <>
       <Row type="horizontal">
         <Heading as="h2">All bookings</Heading>
-        <p>No bookings available at this moment.</p>
       </Row>
 
       <BookingTable />

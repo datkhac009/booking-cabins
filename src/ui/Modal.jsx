@@ -1,3 +1,5 @@
+import { cloneElement, createContext, useContext, useState } from "react";
+import { createPortal } from "react-dom";
 import { HiXMark } from "react-icons/hi2";
 import styled from "styled-components";
 
@@ -9,9 +11,8 @@ const StyledModal = styled.div`
   background-color: var(--color-grey-0);
   border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-lg);
-  padding: 0;
+  padding: 3.2rem 4rem;
   transition: all 0.5s;
-  overflow: hidden;
   z-index: 1001;
 `;
 
@@ -38,32 +39,56 @@ const Button = styled.button`
   right: 1.9rem;
 
   &:hover {
-    background-color: rgba(255, 255, 255, 0.15);
+    background-color: var(--color-grey-100);
   }
 
   & svg {
     width: 2.4rem;
     height: 2.4rem;
-    /* Sometimes we need both */
-    /* fill: var(--color-grey-500);
-    stroke: var(--color-grey-500); */
-    color: #fff;
+    color: var(--color-grey-500);
   }
 `;
-function Modal({children ,closeModal}) {
+
+const ModalContext = createContext();
+
+function Modal({ children }) {
+  const [openName, setOpenName] = useState("");
+
+  const close = () => setOpenName("");
+  const open = setOpenName;
+
   return (
-    
-    <Overlay onClick={closeModal}>
-      <StyledModal onClick={(e) => e.stopPropagation()}>
-        <Button onClick={closeModal}>
-          <HiXMark />
-        </Button>
-        <div>{children}</div>
-      </StyledModal>
-    </Overlay>
-  
-  )
+    <ModalContext.Provider value={{ openName, close, open }}>
+      {children}
+    </ModalContext.Provider>
+  );
 }
 
-export default Modal
+function Toggle({ children, opens: opensWindowName }) {
+  const { open } = useContext(ModalContext);
 
+  return cloneElement(children, { onClick: () => open(opensWindowName) });
+}
+
+function Window({ children, name }) {
+  const { openName, close } = useContext(ModalContext);
+
+  if (name !== openName) return null;
+
+  return createPortal(
+    <Overlay onClick={close}>
+      <StyledModal onClick={(e) => e.stopPropagation()}>
+        <Button onClick={close}>
+          <HiXMark />
+        </Button>
+        <div>{cloneElement(children, { closeModal: close })}</div>
+      </StyledModal>
+    </Overlay>,
+    document.body
+  );
+}
+
+Modal.Toggle = Toggle;
+Modal.Window = Window;
+
+export default Modal;
