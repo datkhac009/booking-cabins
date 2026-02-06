@@ -45,7 +45,7 @@ const Amount = styled.div`
 `;
 
 function BookingRow({ booking }) {
-  const { mutate: deleteBooking, isLoading: isDeleting } = useDeleteBooking();
+  const { deleteBooking, isLoading: isDeleting } = useDeleteBooking();
   const navigate = useNavigate();
   console.log(booking)
   // Extract values from booking with fallbacks
@@ -53,13 +53,13 @@ function BookingRow({ booking }) {
   const startDate = booking.startDate;
   const endDate = booking.endDate;
   const numNights = booking.numNight || 0; 
-  const numGuests = booking.numGuests || 0;
+  //const numGuests = booking.numGuests || 0;
   const cabinsPrice = booking.cabinsPrice || 0;
   const extrasPrice = booking.extrasPrice || 0;
   const totalPrice = cabinsPrice + extrasPrice;
   
   // Since you don't have status, guestId, cabinId in DB, we'll use defaults
-  const status = 'unconfirmed'; // Default status
+  const status = 'checked-in'; // Default status
   const cabinName = `Cabin ${bookingId}`; // Placeholder
   const guestName = 'Guest'; // Placeholder
   const guestEmail = 'guest@example.com'; // Placeholder
@@ -118,7 +118,7 @@ function BookingRow({ booking }) {
         <Modal.Window name='delete'>
           <ConfirmDelete
             resource='booking'
-            onConfirm={(options) => deleteBooking(bookingId, options)}
+            onClick={()=> deleteBooking(bookingId)}
             disabled={isDeleting}
           />
         </Modal.Window>
