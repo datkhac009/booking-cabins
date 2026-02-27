@@ -1,74 +1,40 @@
-// src/ui/Table.jsx
-import styled from "styled-components";
 import { createContext, useContext } from "react";
-
-const TableContext = createContext();
+import styled from "styled-components";
 
 const StyledTable = styled.div`
-  background: var(--color-grey-0);
-  border-radius: 12px;
   border: 1px solid var(--color-grey-200);
-  box-shadow: 0 6px 20px rgba(16, 24, 40, 0.06);
-  overflow: visible;
+  font-size: 1.4rem;
+  background-color: var(--color-grey-0);
+  border-radius: 7px;
 `;
-
 
 const CommonRow = styled.div`
   display: grid;
-  grid-template-columns: ${(p) => p.columns || "2fr 1fr 1fr 1fr 1fr"};
+  grid-template-columns: ${(props) => props.columns};
   column-gap: 2.4rem;
   align-items: center;
-  transition: background-color 160ms ease;
-  /* giúp nội dung bám lề trái gọn gàng */
-  & > * {
-    justify-self: start;
-  }
-  & > *:last-child {
-    justify-self: end; /* ví dụ nút actions ở cột cuối */
-  }
-
-  @media (max-width: 900px) {
-    grid-template-columns: ${(p) =>
-      p.columnsMobile || "1.6fr 1fr 1fr"}; /* gộp cột ở mobile */
-    column-gap: 1.6rem;
-  }
+  transition: none;
 `;
 
 const StyledHeader = styled(CommonRow)`
-  position: sticky;
+  padding: 1.6rem 2.4rem;
+  position: sticky;  /* ✅ Hoạt động! */
   top: 0;
-  z-index: 1;
+  z-index: 10;
   background-color: var(--color-grey-50);
-  border-bottom: 1px solid var(--color-grey-100);
-  padding: 1.2rem 2rem;
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
-  font-weight: 700;
-  color: var(--color-grey-700);
-`;
-
-const StyledBody = styled.section`
-  display: flex;
-  flex-direction: column;
+  border-radius: 7px 7px 0 0; /* Bo góc trực tiếp */
 `;
 
 const StyledRow = styled(CommonRow)`
-  padding: 1.2rem 2rem;
-  background-color: var(--color-grey-0);
+  padding: 1.2rem 2.4rem;
 
   &:not(:last-child) {
     border-bottom: 1px solid var(--color-grey-100);
   }
+`;
 
-  /* zebra */
-  &:nth-child(even) {
-    background-color: var(--color-grey-50);
-  }
-
-  /* hover */
-  &:hover {
-    background-color: var(--color-grey-50);
-  }
+const StyledBody = styled.section`
+  margin: 0;
 `;
 
 const Footer = styled.footer`
@@ -87,46 +53,45 @@ const Empty = styled.p`
   font-weight: 500;
   text-align: center;
   margin: 2.4rem;
-  color: var(--color-grey-600);
 `;
 
-/* ==== Public API ==== */
-function Table({ children, columns }) {
+const TableContext = createContext();
+
+function Table({ columns, children }) {
   return (
     <TableContext.Provider value={{ columns }}>
-      <StyledTable>{children}</StyledTable>
+      <StyledTable role="table">{children}</StyledTable>
     </TableContext.Provider>
   );
 }
 
-Table.Header = function Header({ children }) {
+function Header({ children }) {
   const { columns } = useContext(TableContext);
   return (
-    <StyledHeader columns={columns}>
+    <StyledHeader role="row" columns={columns} as="header">
       {children}
     </StyledHeader>
   );
-};
+}
 
-Table.Body = function Body({ data, render }) {
-  if (!data?.length) return <Empty>No data to show at the moment</Empty>;
-  
-  return <StyledBody>{data.map(render)}</StyledBody>;
-};
-
-Table.Row = function Row({ children }) {
+function Row({ children }) {
   const { columns } = useContext(TableContext);
   return (
-    <StyledRow columns={columns}>
+    <StyledRow role="row" columns={columns}>
       {children}
     </StyledRow>
   );
-};
+}
 
-Table.Footer = function TFooter({ children }) {
-  return <Footer>{children}</Footer>;
-};
+function Body({ data, render }) {
+  if (!data || !data.length) return <Empty>No data to show at the moment</Empty>;
 
-Table.Empty = Empty;
+  return <StyledBody>{data.map(render)}</StyledBody>;
+}
+
+Table.Header = Header;
+Table.Body = Body;
+Table.Row = Row;
+Table.Footer = Footer;
 
 export default Table;

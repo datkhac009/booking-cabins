@@ -1,6 +1,6 @@
 import Spinner from "./../../ui/Spinner";
 import Table from "./../../ui/Table";
-import CabinRow from "../../ui/TableRow";
+import CabinRow from "./CabinRow";  // ✅ Fixed import
 import { useCabins } from "./useCabins";
 import styled from "styled-components";
 import Menus from "../../ui/Menus";
@@ -30,7 +30,6 @@ const TableWrapper = styled.div`
     background: var(--color-grey-500);
   }
 
-  /* Ensure border radius clips content */
   & > * {
     border-radius: 12px;
   }
@@ -43,7 +42,6 @@ export default function CabinTable() {
   console.log(cabins);
   if (isLoading) return <Spinner />;
 
-  
   //Filter
   const filterValue = searchParams.get("discount") || "all";
   let filteredCabins;
@@ -57,11 +55,9 @@ export default function CabinTable() {
   const sortBy = searchParams.get("sortBy") || "startData-asc";
   const [field, direction] = sortBy.split("-");
   const modifier = direction === "asc" ? 1 : -1;
-  console.log("🚀 ~ CabinTable ~ modifier:", modifier);
   const sortedCabins = filteredCabins.sort(
     (a, b) => (a[field] - b[field]) * modifier,
   );
-  console.log("🚀 ~ CabinTable ~ sortedCabins:", sortedCabins);
   
   return (
     <TableWrapper>

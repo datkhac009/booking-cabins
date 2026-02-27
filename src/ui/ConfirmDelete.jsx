@@ -24,9 +24,10 @@ const StyledConfirmDelete = styled.div`
   }
 `;
 
-function ConfirmDelete({ resource, onClick, disabled, closeModal }) {
+function ConfirmDelete({ resource, onConfirm, disabled, closeModal }) {
   function handleConfirmClick() {
-    onClick();
+    onConfirm();
+    closeModal?.(); // Close modal after confirmation
   }
 
   return (

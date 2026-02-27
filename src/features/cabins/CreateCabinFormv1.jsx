@@ -28,27 +28,27 @@ const FormContent = styled.div`
   padding: 2.4rem;
 `;
 
-function CreateCabinFormv1({ editCbin = {}, closeModal }) {
-  const { id: idEdit, ...valueEdit } = editCbin;
-  console.log(valueEdit);
-  const isEditSeesion = Boolean(idEdit);
+function CreateCabinFormv1({ editCabin = {}, closeModal }) {
+  const { id: idEdit, ...valueEdit } = editCabin;
+  const isEditSession = Boolean(idEdit);
 
   const { register, handleSubmit, formState, reset } = useForm({
-    defaultValues: isEditSeesion ? valueEdit : {},
+    defaultValues: isEditSession ? valueEdit : {},
   });
 
   const { CreateCabin, isLoading: isCreating } = useCreateCabin();
-  const { editCabin, isEditing } = useEditCabin();
+  const { editCabin: editCabinFn, isEditing } = useEditCabin();
 
   const { errors } = formState;
   const isLoading = isCreating || isEditing;
+  
   const onSubmit = (data) => {
     console.log("Form data:", data);
     console.log("Image file:", data.image);
 
-    if (isEditSeesion) {
+    if (isEditSession) {
       // EDIT
-      editCabin(
+      editCabinFn(
         { newCabin: data, id: idEdit },
         {
           onSuccess: () => {
@@ -67,6 +67,7 @@ function CreateCabinFormv1({ editCbin = {}, closeModal }) {
       });
     }
   };
+  
   const onError = (error) => {
     console.log(error);
   };
@@ -74,7 +75,7 @@ function CreateCabinFormv1({ editCbin = {}, closeModal }) {
   return (
     <Form onSubmit={handleSubmit(onSubmit, onError)} type="modal">
       <FormHeader>
-        <h2>{isEditSeesion ? "Edit Cabin" : "Add new Cabin"}</h2>
+        <h2>{isEditSession ? "Edit Cabin" : "Add new Cabin"}</h2>
       </FormHeader>
       
       <FormContent>
@@ -87,75 +88,76 @@ function CreateCabinFormv1({ editCbin = {}, closeModal }) {
           />
         </FormRow>
 
-      <FormRow label="Maximum Capacity" error={errors?.maxCapacity?.message}>
-        <Input
-          type="number"
-          id="maxCapacity"
-          disabled={isLoading}
-          {...register("maxCapacity", {
-            required: "This field is required",
-            min: { value: 1, message: "Capacity should be at least 1" },
-          })}
-        />
-      </FormRow>
+        <FormRow label="Maximum Capacity" error={errors?.maxCapacity?.message}>
+          <Input
+            type="number"
+            id="maxCapacity"
+            disabled={isLoading}
+            {...register("maxCapacity", {
+              required: "This field is required",
+              min: { value: 1, message: "Capacity should be at least 1" },
+            })}
+          />
+        </FormRow>
 
-      <FormRow label="Regular Price" error={errors?.regularPrice?.message}>
-        <Input
-          type="number"
-          id="regularPrice"
-          disabled={isLoading}
-          {...register("regularPrice", {
-            required: "This field is required",
-            min: { value: 1, message: "Price should be at least 1" },
-          })}
-        />      
-      </FormRow>
+        <FormRow label="Regular Price" error={errors?.regularPrice?.message}>
+          <Input
+            type="number"
+            id="regularPrice"
+            disabled={isLoading}
+            {...register("regularPrice", {
+              required: "This field is required",
+              min: { value: 1, message: "Price should be at least 1" },
+            })}
+          />      
+        </FormRow>
 
-      <FormRow label="Discount" error={errors?.discount?.message}>
-        <Input
-          type="number"
-          id="discount"
-          disabled={isLoading}
-          defaultValue={0}
-          {...register("discount", {
-            required: "This field is required",
-            validate: (value) => value >= 0 || "Discount cannot be negative",
-          })}
-        />
-      </FormRow>
+        <FormRow label="Discount" error={errors?.discount?.message}>
+          <Input
+            type="number"
+            id="discount"
+            disabled={isLoading}
+            defaultValue={0}
+            {...register("discount", {
+              required: "This field is required",
+              validate: (value) => value >= 0 || "Discount cannot be negative",
+            })}
+          />
+        </FormRow>
 
-      <FormRow label="Description" error={errors?.description?.message}>
-        <Textarea
-          id="description"
-          disabled={isLoading}
-          {...register("description", { required: "This field is required" })}
-        />
-      </FormRow>
-      <FormRow label="image" error={errors?.image?.message}>
-        <Input
-          id="image"
-          type="file"
-          accept="image/*"
-          disabled={isLoading}
-          {...register("image", {
-            validate: (fileList) => {
-              if (!isEditSeesion && (!fileList || fileList.length === 0)) {
-                return "Image is required";
-              }
-              return true;
-            },
-          })}
-        />
-      </FormRow>
+        <FormRow label="Description" error={errors?.description?.message}>
+          <Textarea
+            id="description"
+            disabled={isLoading}
+            {...register("description", { required: "This field is required" })}
+          />
+        </FormRow>
+        
+        <FormRow label="image" error={errors?.image?.message}>
+          <Input
+            id="image"
+            type="file"
+            accept="image/*"
+            disabled={isLoading}
+            {...register("image", {
+              validate: (fileList) => {
+                if (!isEditSession && (!fileList || fileList.length === 0)) {
+                  return "Image is required";
+                }
+                return true;
+              },
+            })}
+          />
+        </FormRow>
 
-      <FormRow>
-        <Button variation="secondary" type="reset" disabled={isLoading}>
-          Reset
-        </Button>
-        <Button disabled={isLoading}>
-          {isLoading ? <SpinnerMini /> : isEditSeesion ? "Edit Cabin" : "Create Cabin"}
-        </Button>
-      </FormRow>
+        <FormRow>
+          <Button variation="secondary" type="reset" disabled={isLoading}>
+            Reset
+          </Button>
+          <Button disabled={isLoading}>
+            {isLoading ? <SpinnerMini /> : isEditSession ? "Edit Cabin" : "Create Cabin"}
+          </Button>
+        </FormRow>
       </FormContent>
     </Form>
   );

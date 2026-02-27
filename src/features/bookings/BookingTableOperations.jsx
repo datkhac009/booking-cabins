@@ -1,6 +1,7 @@
-import SortBy from 'ui/SortBy';
-import Filter from 'ui/Filter';
-import TableOperations from 'ui/TableOperations';
+
+import TableOperations from './../../ui/TableOperations';
+import Filter from './../../ui/Filter';
+import SortBy from './../../ui/SortBy';
 
 function BookingTableOperations() {
   return (

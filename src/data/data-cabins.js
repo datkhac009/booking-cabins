@@ -1,4 +1,5 @@
-const { supabaseUrl } = require('services/supabase');
+import { supabaseUrl } from "../services/supbase";
+
 const imageUrl = `${supabaseUrl}/storage/v1/object/public/cabin-images/`;
 
 // Book now and experience luxury in nature.
@@ -10,7 +11,7 @@ export const cabins = [
     maxCapacity: 2,
     regularPrice: 250,
     discount: 0,
-    image: imageUrl + 'cabin-001.jpg',
+    image: imageUrl + 'cabin-001.jpg',  
     description:
       'Discover the ultimate luxury getaway for couples in the cozy wooden cabin 001. Nestled in a picturesque forest, this stunning cabin offers a secluded and intimate retreat. Inside, enjoy modern high-quality wood interiors, a comfortable seating area, a fireplace and a fully-equipped kitchen. The plush king-size bed, dressed in fine linens guarantees a peaceful nights sleep. Relax in the spa-like shower and unwind on the private deck with hot tub.',
   },
