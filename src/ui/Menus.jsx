@@ -7,6 +7,7 @@ const StyledMenu = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
+
 `;
 
 const StyledToggle = styled.button`
@@ -19,6 +20,7 @@ const StyledToggle = styled.button`
 
   &:hover {
     background-color: var(--color-grey-100);
+    
   }
 
   & svg {

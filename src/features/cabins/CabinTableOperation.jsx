@@ -4,15 +4,28 @@ import SortBy from "../../ui/SortBy";
 function CabinTableOperation() {
   return (
     <TableOperations>
-      <Filter></Filter>
+      <Filter
+        filterField="discount"
+        options={[
+          { value: "all", label: "All" },
+          { value: "no-discount", label: "No Discount" },
+          { value: "with-discount", label: "With Discount" },
+        ]}
+      />
       <SortBy
-        option={[
+        options={[
           { value: "name-asc", label: "Sort by name (A-Z)" },
           { value: "name-desc", label: "Sort by name (Z-A)" },
           { value: "regularPrice-asc", label: "Sort by price (low -> hight)" },
           { value: "regularPrice-desc", label: "Sort by price (hight -> low)" },
-          { value: "maxCapacity-asc", label: "Sort by capacity (low -> hight)" },
-          { value: "maxCapacity-desc", label: "Sort by capacity (hight -> low)" },
+          {
+            value: "maxCapacity-asc",
+            label: "Sort by capacity (low -> hight)",
+          },
+          {
+            value: "maxCapacity-desc",
+            label: "Sort by capacity (hight -> low)",
+          },
         ]}
       />
     </TableOperations>

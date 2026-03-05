@@ -31,6 +31,14 @@ const StyledRow = styled(CommonRow)`
   &:not(:last-child) {
     border-bottom: 1px solid var(--color-grey-100);
   }
+   &:nth-child(even) {
+    background-color: var(--color-grey-50);
+  }
+
+  &:hover {
+    background-color: var(--color-grey-100);
+    transition: background-color 0.2s;
+  }
 `;
 
 const StyledBody = styled.section`

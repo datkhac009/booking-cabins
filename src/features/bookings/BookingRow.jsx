@@ -1,27 +1,23 @@
-import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
-import {
-  HiPencil,
-  HiTrash,
-  HiEye,
-} from 'react-icons/hi2';
+import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
+import { HiPencil, HiTrash, HiEye } from "react-icons/hi2";
 
-import Tag from '../../ui/Tag';
-import Menus from '../../ui/Menus';
-import Modal from '../../ui/Modal';
-import ConfirmDelete from '../../ui/ConfirmDelete';
-import Table from '../../ui/Table';
+import Tag from "../../ui/Tag";
+import Menus from "../../ui/Menus";
+import Modal from "../../ui/Modal";
+import ConfirmDelete from "../../ui/ConfirmDelete";
+import Table from "../../ui/Table";
 
-import { useDeleteBooking } from './useDeleteBooking';
-import { formatCurrency } from '../../utils/helpers';
-import { formatDistanceFromNow } from '../../utils/helpers';
-import { format, isToday } from 'date-fns';
+import { useDeleteBooking } from "./useDeleteBooking";
+import { formatCurrency } from "../../utils/helpers";
+import { formatDistanceFromNow } from "../../utils/helpers";
+import { format, isToday } from "date-fns";
 
 const Cabin = styled.div`
   font-size: 1.6rem;
   font-weight: 600;
   color: var(--color-grey-600);
-  font-family: 'Sono';
+  font-family: "Sono";
 `;
 
 const Stacked = styled.div`
@@ -40,38 +36,37 @@ const Stacked = styled.div`
 `;
 
 const Amount = styled.div`
-  font-family: 'Sono';
+  font-family: "Sono";
   font-weight: 500;
 `;
 
 function BookingRow({ booking }) {
   const { deleteBooking, isLoading: isDeleting } = useDeleteBooking();
   const navigate = useNavigate();
-  console.log(booking)
+  console.log(booking);
   // Extract values from booking with fallbacks
   const bookingId = booking.id;
   const startDate = booking.startDate;
   const endDate = booking.endDate;
-  const numNights = booking.numNight || 0; 
+  const numNights = booking.numNight || 0;
   //const numGuests = booking.numGuests || 0;
   const cabinsPrice = booking.cabinsPrice || 0;
   const extrasPrice = booking.extrasPrice || 0;
   const totalPrice = cabinsPrice + extrasPrice;
-  
-  // Since you don't have status, guestId, cabinId in DB, we'll use defaults
-  const status = 'checked-in'; // Default status
-  const cabinName = `Cabin ${bookingId}`; // Placeholder
-  const guestName = 'Guest'; // Placeholder
-  const guestEmail = 'guest@example.com'; // Placeholder
+
+  const status = booking.status;
+  const cabinName = booking.cabins?.name ?? `Cabin ${bookingId}`;
+  const guestName = booking.guests?.fullName ?? "Guest";
+  const guestEmail = booking.guests?.email ?? "guest@example.com";
 
   const statusToTagName = {
-    unconfirmed: 'blue',
-    'checked-in': 'green',
-    'checked-out': 'silver',
+    unconfirmed: "blue",
+    "checked-in": "green",
+    "checked-out": "silver",
   };
 
   return (
-    <Table.Row role='row'>
+    <Table.Row role="row">
       <Cabin>{cabinName}</Cabin>
 
       <Stacked>
@@ -82,17 +77,17 @@ function BookingRow({ booking }) {
       <Stacked>
         <span>
           {isToday(new Date(startDate))
-            ? 'Today'
-            : formatDistanceFromNow(startDate)}{' '}
+            ? "Today"
+            : formatDistanceFromNow(startDate)}{" "}
           &rarr; {numNights} night stay
         </span>
         <span>
-          {format(new Date(startDate), 'MMM dd yyyy')} &mdash;{' '}
-          {format(new Date(endDate), 'MMM dd yyyy')}
+          {format(new Date(startDate), "MMM dd yyyy")} &mdash;{" "}
+          {format(new Date(endDate), "MMM dd yyyy")}
         </span>
       </Stacked>
 
-      <Tag type={statusToTagName[status]}>{status.replace('-', ' ')}</Tag>
+      <Tag type={statusToTagName[status]}>{status.replace("-", " ")}</Tag>
 
       <Amount>{formatCurrency(totalPrice)}</Amount>
 
@@ -109,16 +104,16 @@ function BookingRow({ booking }) {
 
             <Menus.Button icon={<HiPencil />}>Edit booking</Menus.Button>
 
-            <Modal.Toggle opens='delete'>
+            <Modal.Toggle opens="delete">
               <Menus.Button icon={<HiTrash />}>Delete booking</Menus.Button>
             </Modal.Toggle>
           </Menus.List>
         </Menus.Menu>
 
-        <Modal.Window name='delete'>
+        <Modal.Window name="delete">
           <ConfirmDelete
-            resource='booking'
-            onClick={()=> deleteBooking(bookingId)}
+            resource="booking"
+            onClick={() => deleteBooking(bookingId)}
             disabled={isDeleting}
           />
         </Modal.Window>

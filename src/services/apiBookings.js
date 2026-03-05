@@ -1,17 +1,33 @@
 import { getToday } from "../utils/helpers";
 import { supabase } from "./supbase";
 
-export async function getBooking() {
-  const { data, error } = await supabase
-    .from("bookings")
-    .select("*")
-    .order("created_at", { ascending: false });
-    
+export async function getBooking({ filter, sortBy, page }) {
+  const PAGE_SIZE = 5;
+
+  let query = supabase.from("bookings").select("*", { count: "exact" });
+
+  //filter
+  if (filter !== null) query = query.eq(filter.field, filter.value);
+
+  //sortBy
+  if (sortBy !== null)
+    query = query.order(sortBy.field, {
+      ascending: sortBy.direction === "asc",
+    });
+
+  //  pagintion
+  if (page) {
+    const from = (page - 1) * PAGE_SIZE;
+    const to = from + PAGE_SIZE - 1;
+    query = query.range(from, to);
+  }
+  
+  const { data, error, count } = await query;
   if (error) {
     console.error(error);
     throw new Error("Bookings could not get loaded");
   }
-  return data;
+  return { data, count };
 }
 
 // Returns all BOOKINGS that are were created after the given date. Useful to get bookings created in the last 30 days, for example.
@@ -85,7 +101,11 @@ export async function updateBooking(id, obj) {
 
 export async function deleteBooking(id) {
   // REMEMBER RLS POLICIES
-  const { data, error } = await supabase.from("bookings").delete().eq("id", id).select("id");
+  const { data, error } = await supabase
+    .from("bookings")
+    .delete()
+    .eq("id", id)
+    .select("id");
 
   if (error) {
     console.error(error);
