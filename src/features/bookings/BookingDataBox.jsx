@@ -1,20 +1,20 @@
 import styled from 'styled-components';
 import { format, isToday } from 'date-fns';
 
-import { box } from 'styles/styles';
-import { formatDistanceFromNow } from 'utils/helpers';
-import { formatCurrency } from 'utils/helpers';
+import { formatDistanceFromNow } from '../../utils/helpers';
+import { formatCurrency } from '../../utils/helpers';
 import {
   HiOutlineChatBubbleBottomCenterText,
   HiOutlineCheckCircle,
   HiOutlineCurrencyDollar,
   HiOutlineHomeModern,
 } from 'react-icons/hi2';
-import DataItem from 'ui/DataItem';
-import { Flag } from 'ui/Flag';
+import DataItem from '../../ui/DataItem';
 
 const StyledBookingDataBox = styled.section`
-  ${box} /* padding: 3.2rem 4rem; */
+  background-color: var(--color-grey-0);
+  border: 1px solid var(--color-grey-100);
+  border-radius: var(--border-radius-md);
   overflow: hidden;
 `;
 
@@ -105,16 +105,15 @@ function BookingDataBox({ booking }) {
     created_at,
     startDate,
     endDate,
-    numNights,
+    numNight,
     numGuests,
-    cabinPrice,
+    cabinsPrice,
     extrasPrice,
     totalPrice,
     hasBreakfast,
-    observations,
     isPaid,
-    guests: { fullName: guestName, email, country, countryFlag, nationalID },
-    cabins: { name: cabinName },
+    observations,
+    id,
   } = booking;
 
   return (
@@ -123,36 +122,23 @@ function BookingDataBox({ booking }) {
         <div>
           <HiOutlineHomeModern />
           <p>
-            {numNights} nights in Cabin <span>{cabinName}</span>
+            {numNight} nights in Cabin <span>#{id}</span>
           </p>
         </div>
-
         <p>
           {format(new Date(startDate), 'EEE, MMM dd yyyy')} (
-          {isToday(new Date(startDate))
-            ? 'Today'
-            : formatDistanceFromNow(startDate)}
+          {isToday(new Date(startDate)) ? 'Today' : formatDistanceFromNow(startDate)}
           ) &mdash; {format(new Date(endDate), 'EEE, MMM dd yyyy')}
         </p>
       </Header>
 
       <Section>
         <Guest>
-          {countryFlag && <Flag src={countryFlag} alt={`Flag of ${country}`} />}
-          <p>
-            {guestName} {numGuests > 1 ? `+ ${numGuests - 1} guests` : ''}
-          </p>
-          <span>&bull;</span>
-          <p>{email}</p>
-          <span>&bull;</span>
-          <p>National ID {nationalID}</p>
+          <p>{numGuests} guest{numGuests > 1 ? 's' : ''}</p>
         </Guest>
 
         {observations && (
-          <DataItem
-            icon={<HiOutlineChatBubbleBottomCenterText />}
-            label='Observations'
-          >
+          <DataItem icon={<HiOutlineChatBubbleBottomCenterText />} label='Observations'>
             {observations}
           </DataItem>
         )}
@@ -162,15 +148,10 @@ function BookingDataBox({ booking }) {
         </DataItem>
 
         <Price isPaid={isPaid}>
-          <DataItem icon={<HiOutlineCurrencyDollar />} label={`Total price`}>
+          <DataItem icon={<HiOutlineCurrencyDollar />} label='Total price'>
             {formatCurrency(totalPrice)}
-
-            {hasBreakfast &&
-              ` (${formatCurrency(cabinPrice)} cabin + ${formatCurrency(
-                extrasPrice
-              )} breakfast)`}
+            {hasBreakfast && ` (${formatCurrency(cabinsPrice)} cabin + ${formatCurrency(extrasPrice)} breakfast)`}
           </DataItem>
-
           <p>{isPaid ? 'Paid' : 'Will pay at property'}</p>
         </Price>
       </Section>
