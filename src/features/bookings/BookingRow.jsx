@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import { HiPencil, HiTrash, HiEye } from "react-icons/hi2";
+import { HiPencil, HiTrash, HiEye, HiArrowDownOnSquare } from "react-icons/hi2";
 
 import Tag from "../../ui/Tag";
 import Menus from "../../ui/Menus";
@@ -95,6 +95,14 @@ function BookingRow({ booking }) {
         <Menus.Menu>
           <Menus.Toggle id={bookingId} />
           <Menus.List id={bookingId}>
+            {status === "unconfirmed" && (
+              <Menus.Button
+                onClick={() => navigate(`/checkin/${bookingId}`)}
+                icon={<HiArrowDownOnSquare />}
+              >
+                Check in
+              </Menus.Button>
+            )}
             <Menus.Button
               onClick={() => navigate(`/bookings/${bookingId}`)}
               icon={<HiEye />}
