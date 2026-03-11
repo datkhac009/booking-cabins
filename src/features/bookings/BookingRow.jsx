@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import { HiPencil, HiTrash, HiEye, HiArrowDownOnSquare } from "react-icons/hi2";
+import { HiEye, HiArrowDownOnSquare, HiTrash } from "react-icons/hi2";
 
 import Tag from "../../ui/Tag";
 import Menus from "../../ui/Menus";
@@ -103,6 +103,14 @@ function BookingRow({ booking }) {
                 Check in
               </Menus.Button>
             )}
+            {status === "checked-in" && (
+              <Menus.Button
+                onClick={() => navigate(`/bookings/${bookingId}`)}
+                icon={<HiArrowDownOnSquare />}
+              >
+                Check out
+              </Menus.Button>
+            )}
             <Menus.Button
               onClick={() => navigate(`/bookings/${bookingId}`)}
               icon={<HiEye />}
@@ -110,10 +118,8 @@ function BookingRow({ booking }) {
               See details
             </Menus.Button>
 
-            <Menus.Button icon={<HiPencil />}>Edit booking</Menus.Button>
-
             <Modal.Toggle opens="delete">
-              <Menus.Button icon={<HiTrash />}>Delete booking</Menus.Button>
+              <Menus.Button icon={<HiTrash />}>Delete Booking</Menus.Button>
             </Modal.Toggle>
           </Menus.List>
         </Menus.Menu>
@@ -121,7 +127,7 @@ function BookingRow({ booking }) {
         <Modal.Window name="delete">
           <ConfirmDelete
             resource="booking"
-            onClick={() => deleteBooking(bookingId)}
+            onConfirm={() => deleteBooking(bookingId)}
             disabled={isDeleting}
           />
         </Modal.Window>

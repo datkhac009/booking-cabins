@@ -18,7 +18,6 @@ import { useCheckout } from "./../check-in-out/useCheckout";
 import Empty from "../../ui/Empty";
 import BookingDataBox from "./BookingDataBox";
 import useBookingDetail from "./useBookingDetail";
-import Menus from "../../ui/Menus";
 
 const HeadingGroup = styled.div`
   display: flex;
@@ -29,7 +28,7 @@ const HeadingGroup = styled.div`
 function BookingDetail() {
   const { booking, isLoading } = useBookingDetail();
   const { deleteBooking, isLoading: isDeleting } = useDeleteBooking();
-  const { mutate: checkout, isLoading: isCheckingOut } = useCheckout();
+  const { checkout, isLoading: isCheckingOut } = useCheckout();
 
   const moveBack = useMoveBack();
   const navigate = useNavigate();
@@ -42,7 +41,7 @@ function BookingDetail() {
     "checked-in": "green",
     "checked-out": "silver",
   };
-
+  
   const { id: bookingId, status } = booking;
 
   // We return a fragment so that these elements fit into the page's layout
@@ -59,13 +58,6 @@ function BookingDetail() {
       <BookingDataBox booking={booking} />
 
       <ButtonGroup>
-        {status === "unconfirmed" && (
-          <Menus.Button
-            onClick={() => navigate(`/checkin/${bookingId}`)}
-          >
-            Check in
-          </Menus.Button>
-        )}
         {status === "unconfirmed" && (
           <Button onClick={() => navigate(`/checkin/${bookingId}`)}>
             Check in

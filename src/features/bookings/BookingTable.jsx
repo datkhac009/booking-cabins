@@ -30,7 +30,6 @@ import Table from "../../ui/Table";
 
 function BookingTable() {
   const { bookings, count, isLoading } = useBooking();
-  console.log(bookings);
   if (isLoading) return <Spinner />;
   if (!bookings) return <Empty resource={"bookings"} />;
 
@@ -44,7 +43,7 @@ function BookingTable() {
         <Table.Header>
           <div>Cabin</div>
           <div>Guest</div>
-          <div>Dates</div>
+          <div>Dates Bookings</div>
           <div>Status</div>
           <div>Amount</div>
           <div></div>

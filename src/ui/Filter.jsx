@@ -25,7 +25,7 @@ const FilterButton = styled.button`
   border-radius: var(--border-radius-sm);
   font-weight: 500;
   font-size: 1.4rem;
-  /* To give the same height as select */
+  /* To give the same height as select */ 
   padding: 0.44rem 0.8rem;
   transition: all 0.3s;
 
@@ -40,6 +40,7 @@ function Filter({ filterField, options }) {
 
   function handleFilter(value) {
     searchParams.set(filterField, value);
+    if (searchParams.get("page")) searchParams.set("page", 1);
     setSearchParams(searchParams);
   }
 

@@ -37,7 +37,7 @@ export async function getBookingById(id) {
     .select("*,cabins(*), guest(*)")
     .eq("id", id)
     .single();
-
+    
   if (error) {
     console.error(error);
     throw new Error("Bookings could not get loaded");
