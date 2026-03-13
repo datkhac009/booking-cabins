@@ -14,7 +14,12 @@ function LoginForm() {
     e.preventDefault()
 
     if(!email || !password) return
-    logins({email,password})
+    logins({email,password},{
+      onSettled: () =>  {
+        setEmail("");
+        setPassword("");
+      }
+    })
   }
 
   return (

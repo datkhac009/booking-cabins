@@ -2,8 +2,7 @@ import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
 import styled from "styled-components";
-import { Toaster } from "react-hot-toast";
-
+  
 const StyledAppLayout = styled.div`
   display: grid;
   grid-template-columns: 26rem 1fr;
@@ -25,7 +24,6 @@ function AppLayout() {
       <Header />
       <Sidebar />
       <Main>
-        <Toaster position="top-center" reverseOrder={false} />
 
         <Container>
           <Outlet />
