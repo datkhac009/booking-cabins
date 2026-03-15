@@ -12,8 +12,8 @@ function useLogin() {
     error,
   } = useMutation({
     mutationFn: ({ email, password }) => login({ email, password }),
-    onSuccess: (data) => {
-      queryClient.setQueriesData("user", data.user);//khi đăng nhập đúng thì sẽ lưu trữ dữ liệu user ở local
+    onSuccess: (user) => {
+      queryClient.setQueryData(["user"], user.user);//khi đăng nhập đúng thì sẽ lưu trữ dữ liệu user ở local
       toast.success("Logged in successfully!");
       navigate("/dashboard" , {replace:true});
     },
