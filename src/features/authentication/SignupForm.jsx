@@ -3,16 +3,18 @@ import Button from "../../ui/Button";
 import Form from "../../ui/Form";
 import FormRow from "../../ui/FormRow";
 import Input from "../../ui/Input";
+import useSignUpForm from "./useSignUpForm";
 
 // Email regex: /\S+@\S+\.\S+/
 
 function SignupForm() {
-  const { register, formState ,getValues ,handleSubmit} = useForm();
+  const { register, formState, getValues, handleSubmit, reset } = useForm();
   const { errors } = formState;
+  const { signup, isLoading } = useSignUpForm();
 
-    function onSubmit(data){
-        console.log(data)
-    }
+  function onSubmit({ fullname, email, password }) {
+    signup({ fullname, email, password }, { onSettled: reset() });
+  }
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
       <FormRow label="Full name" error={errors?.fullName?.message}>
@@ -37,16 +39,19 @@ function SignupForm() {
         />
       </FormRow>
 
-      <FormRow label="Password (min 8 characters)" error={errors?.password?.message}>
+      <FormRow
+        label="Password (min 8 characters)"
+        error={errors?.password?.message}
+      >
         <Input
           type="password"
           id="password"
+          disabled={isLoading}
           {...register("password", {
             required: "This field is requied",
             maxLength: {
               value: 8,
               message: "Password needs a minium of 8 characters",
-              
             },
           })}
         />
@@ -56,9 +61,11 @@ function SignupForm() {
         <Input
           type="password"
           id="passwordConfirm"
+          disabled={isLoading}
           {...register("passwordConfirm", {
             required: "This field is requied",
-            validate:(value) => value === getValues("password") || "Passwords need to match"
+            validate: (value) =>
+              value === getValues("password") || "Passwords need to match",
           })}
         />
       </FormRow>
@@ -68,7 +75,7 @@ function SignupForm() {
         <Button variation="secondary" type="reset">
           Cancel
         </Button>
-        <Button>Create new user</Button>
+        <Button disabled={isLoading}>Create new user</Button>
       </FormRow>
     </Form>
   );
