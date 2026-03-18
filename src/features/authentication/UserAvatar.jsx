@@ -1,5 +1,7 @@
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useUser } from "./useUser";
+import { supabase } from "../../services/supbase";
 
 const StyledUserAvatar = styled.div`
   display: flex;
@@ -12,7 +14,6 @@ const StyledUserAvatar = styled.div`
 
 const Avatar = styled.img`
   display: block;
-  width: 4rem;
   width: 3.6rem;
   aspect-ratio: 1;
   object-fit: cover;
@@ -22,17 +23,44 @@ const Avatar = styled.img`
 `;
 
 function UserAvatar() {
-    const {user} = useUser()
-    const {fullName,avatar} = user.user_metadata;
+  const { user } = useUser();
+  const [avatarUrl, setAvatarUrl] = useState("");
 
-    return (
-        <>
-            <StyledUserAvatar>
-                <Avatar src={avatar || 'default-user.jpg'} alt={`Avatar user ${fullName}`}/>
-                <span>{fullName}</span>
-            </StyledUserAvatar>
-        </>
-    )
+  const fullName = user?.user_metadata?.fullName;
+  const avatarPath = user?.user_metadata?.avatar;
+
+  useEffect(() => {
+    async function loadAvatar() {
+      if (!avatarPath) {
+        setAvatarUrl("");
+        return;
+      }
+
+      const { data, error } = await supabase.storage
+        .from("avatar")
+        .createSignedUrl(avatarPath, 60 * 60);
+
+      if (error) {
+        console.error("Error creating signed URL:", error.message);
+        setAvatarUrl("");
+        return;
+      }
+
+      setAvatarUrl(data.signedUrl);
+    }
+
+    loadAvatar();
+  }, [avatarPath]);
+
+  return (
+    <StyledUserAvatar>
+      <Avatar
+        src={avatarUrl || "/default-user.jpg"}
+        alt={`Avatar user ${fullName || "user"}`}
+      />
+      <span>{fullName}</span>
+    </StyledUserAvatar>
+  );
 }
 
-export default UserAvatar
+export default UserAvatar;
