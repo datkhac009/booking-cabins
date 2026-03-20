@@ -17,7 +17,7 @@ function Login() {
   return (
     <>
       <LoginLayout>
-      <Heading as="h3">email:dat2020@gmail.com, password:12345678</Heading>
+      <Heading as="h3">email:guest@gmail.com, password:12345678</Heading>
         <Logo />
         <Heading as="h3">Log in to your account</Heading>
         <LoginForm />

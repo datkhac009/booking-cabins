@@ -7,9 +7,9 @@ export function useEditCabin() {
 
   const {  mutate: editCabin, isLoading: isEditing } = useMutation({
     mutationFn: ({ newCabin, id }) => createEditCabins(newCabin, id),
-    onSuccess: () => {
+    onSuccess: ({cabin}) => {
       toast.success("Cabin successfully edited");
-      queryClient.invalidateQueries({ queryKey: ["cabins"] });
+      queryClient.invalidateQueries( ["cabins"] ,cabin);
     },
     onError: (err) => toast.error(err.message),
   });

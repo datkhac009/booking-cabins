@@ -57,7 +57,7 @@ export async function updateCurrentUser({ password, fullName, avatar }) {
   }
   if (!avatar) return data;
 
-  //2 Upload the avatar image bucket private 
+  //2 Upload the avatar image bucket private
   const fileExt = avatar.name.split(".").pop();
   const fileName = `avatar-${data.user.id}-${Date.now()}.${fileExt}`;
 
