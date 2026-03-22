@@ -36,7 +36,7 @@ function CreateCabinFormv1({ editCabin = {}, closeModal }) {
     defaultValues: isEditSession ? valueEdit : {},
   });
 
-  const { CreateCabin, isLoading: isCreating } = useCreateCabin();
+  const { createCabin, isLoading: isCreating } = useCreateCabin();
   const { editCabin: editCabinFn, isEditing } = useEditCabin();
 
   const { errors } = formState;
@@ -59,7 +59,7 @@ function CreateCabinFormv1({ editCabin = {}, closeModal }) {
       );
     } else {
       // CREATE
-      CreateCabin(data, {
+      createCabin(data, {
         onSuccess: () => {
           reset();
           closeModal?.();
@@ -108,6 +108,7 @@ function CreateCabinFormv1({ editCabin = {}, closeModal }) {
             {...register("regularPrice", {
               required: "This field is required",
               min: { value: 1, message: "Price should be at least 1" },
+              max: { value: 36363, message: "Price cannot exceed 36,363" }
             })}
           />      
         </FormRow>
