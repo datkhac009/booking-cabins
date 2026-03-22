@@ -31,7 +31,8 @@ function SalesChart({ bookings, numDays }) {
     start: subDays(new Date(), numDays - 1),
     end: new Date(),
   });
-
+  
+  //Real data
   const data = allDates.map((date) => {
     return {
       label: format(date, 'MMM dd'),
@@ -67,7 +68,7 @@ function SalesChart({ bookings, numDays }) {
 
       <ResponsiveContainer width='100%' height={300}>
         {/* <AreaChart data={data} width={700} height={300}> */}
-        <AreaChart data={data}>
+        <AreaChart data={OLDdata}>
           <XAxis
             dataKey='label'
             tick={{ fill: colors.text }}
@@ -109,7 +110,7 @@ function SalesChart({ bookings, numDays }) {
 }
 
 export default SalesChart;
-
+//test Data recharts
 const OLDdata = [
   { label: 'Jan 09', totalSales: 480, extrasSales: 320 - 300 },
   { label: 'Jan 10', totalSales: 580, extrasSales: 400 - 300 },
