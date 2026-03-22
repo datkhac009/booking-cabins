@@ -1,15 +1,12 @@
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { box } from 'styles/styles';
-import Button from 'ui/Button';
-import Heading from 'ui/Heading';
-import Row from 'ui/Row';
-import Spinner from 'ui/Spinner';
+//import Button from './../../ui/Button';
+import Heading from './../../ui/Heading';
+import Row from './../../ui/Row';
+import Spinner from './../../ui/Spinner';
 import TodayItem from '../dashboard/TodayItem';
-import { useActivityTodayStays } from './useActivityTodayStays';
+import useActivityTodayStays from './useActivityTodayStays';
 
 const StyledToday = styled.div`
-  ${box}
   padding: 3.2rem;
   display: flex;
   flex-direction: column;

@@ -1,8 +1,6 @@
 import styled from 'styled-components';
-import { box } from 'styles/styles';
 
 const StyledStat = styled.div`
-  ${box}
 
   padding: 1.6rem;
   display: grid;
@@ -15,7 +13,7 @@ const StyledStat = styled.div`
 const Icon = styled.div`
   grid-row: 1 / -1;
   aspect-ratio: 1;
-  border-radius: 50%;
+  border-radius: 50%; 
   display: flex;
   align-items: center;
   justify-content: center;

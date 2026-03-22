@@ -1,4 +1,4 @@
-import { useDarkMode } from 'context/DarkModeContext';
+import { useDarkMode } from '../../context/DarkModeContext';
 import {
   Cell,
   Legend,
@@ -8,11 +8,9 @@ import {
   Tooltip,
 } from 'recharts';
 import styled from 'styled-components';
-import { box } from 'styles/styles';
-import Heading from 'ui/Heading';
+import Heading from '../../ui/Heading';
 
 const ChartBox = styled.div`
-  ${box}
   padding: 2.4rem 3.2rem;
 
   grid-column: 3 / span 2;
@@ -25,6 +23,12 @@ const ChartBox = styled.div`
   & > *:first-child {
     margin-bottom: 1.6rem;
   }
+`;
+const NoDuration  = styled.p`
+  text-align: center;
+  font-size: 1.8rem;
+  font-weight: 500;
+  margin-top: 0.8rem;
 `;
 /*
 const startDataLight = {
@@ -288,10 +292,10 @@ function DurationChart({ confirmedStays }) {
   const { isDarkMode } = useDarkMode();
   const startData = isDarkMode ? startDataDark : startDataLight;
   const data = prepareData(startData, confirmedStays);
-
   return (
     <ChartBox>
       <Heading type='h2'>Stay duration summary</Heading>
+      <NoDuration>No Duration Today...</NoDuration>
       <ResponsiveContainer width='100%' height={240}>
         <PieChart>
           <Pie
