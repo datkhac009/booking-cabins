@@ -68,7 +68,7 @@ function SalesChart({ bookings, numDays }) {
 
       <ResponsiveContainer width='100%' height={300}>
         {/* <AreaChart data={data} width={700} height={300}> */}
-        <AreaChart data={data}>
+        <AreaChart data={data} width='100%' height={400} margin={{ left: 10 }}>
           <XAxis
             dataKey='label'
             tick={{ fill: colors.text }}
