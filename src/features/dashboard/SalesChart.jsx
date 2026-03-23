@@ -68,7 +68,7 @@ function SalesChart({ bookings, numDays }) {
 
       <ResponsiveContainer width='100%' height={300}>
         {/* <AreaChart data={data} width={700} height={300}> */}
-        <AreaChart data={OLDdata}>
+        <AreaChart data={data}>
           <XAxis
             dataKey='label'
             tick={{ fill: colors.text }}
@@ -84,8 +84,6 @@ function SalesChart({ bookings, numDays }) {
           <Area
             type='monotone'
             dataKey='totalSales'
-            // stroke='#4f46e5'
-            // fill='#c7d2fe'
             stroke={colors.totalSales.stroke}
             fill={colors.totalSales.fill}
             strokeWidth={2}
@@ -95,8 +93,6 @@ function SalesChart({ bookings, numDays }) {
           <Area
             type='monotone'
             dataKey='extrasSales'
-            // stroke='#15803d'
-            // fill='#dcfce7'
             stroke={colors.extrasSales.stroke}
             fill={colors.extrasSales.fill}
             strokeWidth={2}

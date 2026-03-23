@@ -123,6 +123,11 @@ body {
   min-height: 100vh;
   line-height: 1.5;
   font-size: 1.6rem;
+
+    background-color: var(--color-grey-50);
+  background-image: 
+    radial-gradient(at 80% 0%, hsla(240, 100%, 95%, 0.3) 0px, transparent 50%),
+    radial-gradient(at 0% 50%, hsla(250, 100%, 95%, 0.2) 0px, transparent 50%);
 }
 
 input,

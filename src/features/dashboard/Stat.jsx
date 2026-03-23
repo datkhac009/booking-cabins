@@ -1,6 +1,10 @@
 import styled from 'styled-components';
 
 const StyledStat = styled.div`
+  /* Box */
+  background-color: var(--color-grey-0);
+  border: 1px solid var(--color-grey-100);
+  border-radius: var(--border-radius-md);
 
   padding: 1.6rem;
   display: grid;
@@ -13,7 +17,7 @@ const StyledStat = styled.div`
 const Icon = styled.div`
   grid-row: 1 / -1;
   aspect-ratio: 1;
-  border-radius: 50%; 
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -41,7 +45,6 @@ const Value = styled.p`
   font-size: 2.4rem;
   line-height: 1;
   font-weight: 500;
-  /* color: var(--color-grey-600); */
 `;
 
 function Stat({ icon, title, value, color }) {
