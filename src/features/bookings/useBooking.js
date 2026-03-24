@@ -22,7 +22,7 @@ function useBooking() {
   }
   //pagintion 
 
-  const page = searchParams.get("gape") ? 1 : Number(searchParams.get("page"));
+  const page = !searchParams.get("page") ? 1 : Number(searchParams.get("page"));
 
   const {
     data: {data: bookings , count} = {},

@@ -1,4 +1,4 @@
-import { supabase } from "./supbase";
+import { supabase, supabaseUrl } from "./supbase";
 
 export async function signup({ fullName, email, password }) {
   const { data, error } = await supabase.auth.signUp({
@@ -75,7 +75,7 @@ export async function updateCurrentUser({ password, fullName, avatar }) {
     await supabase.auth.updateUser({
       data: {
         fullName: fullName ?? data.user.user_metadata.fullName,
-        avatar: fileName,
+        avatar: `${supabaseUrl}/storage/v1/object/public/avatar/${fileName}`
       },
     });
   if (errorAvatarUser) {

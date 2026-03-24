@@ -1,6 +1,6 @@
 import { supabaseUrl } from "../services/supbase";
 
-const imageUrl = `${supabaseUrl}/storage/v1/object/public/cabin-images/`;
+const imageUrl = `${supabaseUrl}/storage/v1/object/public/cabins-image/`;
 
 // Book now and experience luxury in nature.
 // Book now and elevate your group or family getaway to new heights of luxury.

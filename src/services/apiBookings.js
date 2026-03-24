@@ -37,7 +37,7 @@ export async function getBookingById(id) {
     .select("*,cabins(*), guest(*)")
     .eq("id", id)
     .single();
-    
+
   if (error) {
     console.error(error);
     throw new Error("Bookings could not get loaded");
@@ -69,7 +69,7 @@ export async function getStaysAfterDate(date) {
     // .select('*')
     .select("*, guest(fullname)")
     .gte("startDate", date)
-    .lte("startDate", getToday({end : true}));
+    .lte("startDate", getToday({ end: true }));
 
   if (error) {
     console.error(error);
@@ -101,16 +101,21 @@ export async function getStaysTodayActivity() {
 }
 
 export async function updateBooking(id, obj) {
+  console.log("updateBooking id:", id);
+  console.log("updateBooking obj:", obj);
   const { data, error } = await supabase
     .from("bookings")
     .update(obj)
     .eq("id", id)
-    .select()
-    .single();
-
+    .select();
+  console.log("update result data:", data);
+  console.log("update result error:", error);
   if (error) {
     console.error(error);
     throw new Error("Booking could not be updated");
+  }
+  if (!data || data.length === 0) {
+    throw new Error("No booking row was updated");
   }
   return data;
 }
