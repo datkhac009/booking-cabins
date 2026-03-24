@@ -29,8 +29,7 @@ const Guest = styled.div`
 
 function TodayItem({ stay }) {
   console.log(stay)
-  const { id, status, numNights } = stay;
-
+  const { id, status, numNight } = stay;
   const statusToAction = {
     "unconfirmed": {
       action: "arriving",
@@ -63,7 +62,7 @@ function TodayItem({ stay }) {
         alt={`Flag of ${stay.guest?.country}`}
       />
       <Guest>{stay.guest?.fullname}</Guest>
-      <div>{numNights} nights</div>
+      <div>{numNight} nights</div>
 
       {statusToAction[status].button}
     </StyledTodayItem>
