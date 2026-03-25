@@ -10,19 +10,19 @@ import { guests } from "./data-guests";
 // Xóa toàn bộ data trong bảng guest
 async function deleteGuests() {
   const { error } = await supabase.from("guest").delete().gt("id", 0);
-  if (error) console.log("❌ deleteGuests:", error.message);
+  if (error) console.log(" deleteGuests:", error.message);
 }
 
 // Xóa toàn bộ data trong bảng cabins
 async function deleteCabins() {
   const { error } = await supabase.from("cabins").delete().gt("id", 0);
-  if (error) console.log("❌ deleteCabins:", error.message);
+  if (error) console.log(" deleteCabins:", error.message);
 }
 
 // Xóa toàn bộ data trong bảng bookings
 async function deleteBookings() {
   const { error } = await supabase.from("bookings").delete().gt("id", 0);
-  if (error) console.log("❌ deleteBookings:", error.message);
+  if (error) console.log(" deleteBookings:", error.message);
 }
 
 // Tạo guests từ data-guests.js
@@ -30,7 +30,7 @@ async function deleteBookings() {
 async function createGuests() {
   // Map lại để đổi fullName → fullname cho khớp tên cột trong Supabase
   const guestsFixed = guests.map((g) => ({
-    fullname: g.fullName,       // ← đổi fullName → fullname
+    fullname: g.fullname,       
     email: g.email,
     nationality: g.nationality,
     nationalID: g.nationalID,
@@ -38,14 +38,14 @@ async function createGuests() {
   }));
 
   const { error } = await supabase.from("guest").insert(guestsFixed);
-  if (error) console.log("❌ createGuests:", error.message);
+  if (error) console.log(" createGuests:", error.message);
   else console.log("✅ createGuests: thành công");
 }
 
 // Tạo cabins từ data-cabins.js
 async function createCabins() {
   const { error } = await supabase.from("cabins").insert(cabins);
-  if (error) console.log("❌ createCabins:", error.message);
+  if (error) console.log(" createCabins:", error.message);
   else console.log("✅ createCabins: thành công");
 }
 
@@ -99,7 +99,7 @@ async function createBookings() {
       status = "checked-in";    // Đang ở
 
     // Trả về object với đúng tên cột trong Supabase
-    // KHÔNG dùng ...booking để tránh truyền cabinId/guestId sai tên cột
+ 
     return {
       created_at: booking.created_at,
       startDate: booking.startDate,
@@ -107,24 +107,24 @@ async function createBookings() {
       numGuests: booking.numGuests,
       hasBreakfast: booking.hasBreakfast,
       isPaid: booking.isPaid,
-      obvervations: booking.observations,   // ← đổi observations → obvervations (tên cột trong Supabase)
+      obvervations: booking.obvervations,   
       // Các field tính toán
-      numNight,                              // ← numNights → numNight (tên cột trong Supabase)
-      cabinsPrice,                           // ← cabinPrice → cabinsPrice (tên cột trong Supabase)
+      numNight,                              
+      cabinsPrice,                          
       extrasPrice,
       totalPrice,
       status,
       // ID thật từ DB sau khi insert
-      cabinID: allCabinIds.at(booking.cabinId - 1),   // ← cabinId → cabinID (tên cột trong Supabase)
-      guestID: allGuestIds.at(booking.guestId - 1),   // ← guestId → guestID (tên cột trong Supabase)
+      cabinID: allCabinIds.at(booking.cabinId - 1),   
+      guestID: allGuestIds.at(booking.guestId - 1),   
     };
   });
 
   console.log("📦 finalBookings:", finalBookings);
 
   const { error } = await supabase.from("bookings").insert(finalBookings);
-  if (error) console.log("❌ createBookings:", error.message);
-  else console.log("✅ createBookings: thành công");
+  if (error) console.log(" createBookings:", error.message);
+  else console.log(" createBookings: thành công");
 }
 
 export function Uploader() {
