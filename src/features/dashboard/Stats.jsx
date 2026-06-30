@@ -8,8 +8,6 @@ import { formatCurrency } from '../../utils/helpers';
 import Stat from './Stat';
 
 function Stats({ bookings , confirmedStays , numDays, cabinCount }) {
-    console.log(confirmedStays)
-
   // Stat 1)
   const numBookings = bookings.length;
 
@@ -24,7 +22,7 @@ function Stats({ bookings , confirmedStays , numDays, cabinCount }) {
   const occupation =
     confirmedStays.reduce((acc, cur) => acc + cur.numNight, 0) /
     (numDays * cabinCount);
-  console.log(occupation)
+
   return (
     <>
       <Stat

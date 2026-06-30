@@ -5,9 +5,11 @@ import toast from "react-hot-toast";
 function useSignUpForm() {
   const { mutate: signup, isLoading } = useMutation({
     mutationFn: signApi,
-    onSuccess: (user) => {
-      console.log(user);
-      toast.success("Account create sucssesfully ");
+    onSuccess: () => {
+      toast.success("Account created successfully! You can log in now.");
+    },
+    onError: (err) => {
+      toast.error(err.message || "Could not create account");
     },
   });
 

@@ -42,7 +42,12 @@ const FileNameBox = styled.div`
   white-space: nowrap;
 `;
 
-function FileInput({ onChange }) {
+function FileInput({
+  id = "avatar",
+  accept = "image/*",
+  disabled = false,
+  onChange,
+}) {
   const [fileName, setFileName] = useState("Chưa có tệp nào được chọn");
 
   function handleChange(e) {
@@ -54,12 +59,13 @@ function FileInput({ onChange }) {
   return (
     <FileInputWrapper>
       <HiddenFileInput
-        id="avatar"
+        id={id}
         type="file"
-        accept="image/*"
+        accept={accept}
+        disabled={disabled}
         onChange={handleChange}
       />
-      <FileLabel htmlFor="avatar">Choose file</FileLabel>
+      <FileLabel htmlFor={id}>Choose file</FileLabel>
       <FileNameBox>{fileName}</FileNameBox>
     </FileInputWrapper>
   );

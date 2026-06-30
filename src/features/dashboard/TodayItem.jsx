@@ -28,7 +28,6 @@ const Guest = styled.div`
 `;
 
 function TodayItem({ stay }) {
-  console.log(stay)
   const { id, status, numNight } = stay;
   const statusToAction = {
     "unconfirmed": {

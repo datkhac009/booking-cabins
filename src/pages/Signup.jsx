@@ -1,10 +1,10 @@
-import styled from "styled-components";
 import { Link } from "react-router-dom";
-import Logo from "../ui/Logo";
+import styled from "styled-components";
+import SignupForm from "../features/authentication/SignupForm";
 import Heading from "../ui/Heading";
-import LoginForm from "../features/authentication/LoginForm";
+import Logo from "../ui/Logo";
 
-const LoginLayout = styled.main`
+const SignupLayout = styled.main`
   min-height: 100vh;
   display: grid;
   place-items: center;
@@ -15,7 +15,7 @@ const LoginLayout = styled.main`
     var(--color-grey-50);
 `;
 
-const LoginCard = styled.section`
+const SignupCard = styled.section`
   width: min(100%, 48rem);
   display: grid;
   gap: 2.4rem;
@@ -36,6 +36,11 @@ const Header = styled.div`
   text-align: center;
 `;
 
+const SubText = styled.p`
+  color: var(--color-grey-500);
+  font-size: 1.4rem;
+`;
+
 const FooterText = styled.p`
   text-align: center;
   color: var(--color-grey-600);
@@ -51,23 +56,24 @@ const FooterText = styled.p`
   }
 `;
 
-function Login() {
+function Signup() {
   return (
-    <LoginLayout>
-      <LoginCard>
+    <SignupLayout>
+      <SignupCard>
         <Logo />
         <Header>
           <Heading as="h1" type="h3">
-            Log in to your account
+            Create your account
           </Heading>
+          <SubText>Register a new Wild Oasis user with Supabase Auth.</SubText>
         </Header>
-        <LoginForm />
+        <SignupForm flat />
         <FooterText>
-          Need an account? <Link to="/signup">Create one</Link>
+          Already have an account? <Link to="/login">Log in</Link>
         </FooterText>
-      </LoginCard>
-    </LoginLayout>
+      </SignupCard>
+    </SignupLayout>
   );
 }
 
-export default Login;
+export default Signup;

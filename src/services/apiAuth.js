@@ -11,9 +11,12 @@ export async function signup({ fullName, email, password }) {
       },
     },
   });
-  if (error) throw new Error(error.message || "Error Login");
 
-  console.log(data);
+  if (error) throw new Error(error.message || "Could not create account");
+
+  if (data.user?.identities?.length === 0)
+    throw new Error("This email is already registered. Please log in instead.");
+
   return data;
 }
 
@@ -29,7 +32,9 @@ export async function login({ email, password }) {
 }
 
 export async function getUser() {
-  const { data: session } = await supabase.auth.getSession();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
 
   if (!session) return null;
 
@@ -46,9 +51,10 @@ export async function logout() {
 
 export async function updateCurrentUser({ password, fullName, avatar }) {
   //1 Update password or fullname
-  let updateData;
-  if (password) updateData = { password };
-  if (fullName) updateData = { data: { fullName } };
+  const updateData = {};
+
+  if (password) updateData.password = password;
+  if (fullName) updateData.data = { fullName };
 
   const { data, error } = await supabase.auth.updateUser(updateData);
 

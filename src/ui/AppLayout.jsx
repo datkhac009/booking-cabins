@@ -11,13 +11,13 @@ const StyledAppLayout = styled.div`
 `;
 
 const Main = styled.main`
-   background-color: var(--color-grey-0);
+  background-color: var(--color-grey-50);
   padding: 4rem 4.8rem 6.4rem;
   overflow: scroll;
   border-left: 1px solid var(--color-grey-100);
 `;
 const Container = styled.div`
-  max-width: 120rem;
+  max-width: 128rem;
   margin: 0 auto;
 `;
 function AppLayout() {

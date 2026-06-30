@@ -1,22 +1,25 @@
 import styled from 'styled-components';
-//import Button from './../../ui/Button';
 import Heading from './../../ui/Heading';
 import Row from './../../ui/Row';
 import Spinner from './../../ui/Spinner';
 import TodayItem from '../dashboard/TodayItem';
 import useActivityTodayStays from './useActivityTodayStays';
+import DashboardBox from '../dashboard/DashboardBox';
 
-const StyledToday = styled.div`
-  padding: 3.2rem;
+const StyledToday = styled(DashboardBox)`
   display: flex;
   flex-direction: column;
-  gap: 2.4rem;
   grid-column: 1 / span 2;
-  padding-top: 2.4rem;
+  min-height: 34rem;
+
+  @media (max-width: 680px) {
+    grid-column: 1;
+  }
 `;
 
 const TodayList = styled.ul`
-  overflow: scroll;
+  overflow-y: auto;
+  margin: -0.8rem 0;
   overflow-x: hidden;
 
   /* Removing scrollbars for webkit, firefox, and ms, respectively */
@@ -28,10 +31,17 @@ const TodayList = styled.ul`
 `;
 
 const NoActivity = styled.p`
+  flex: 1;
+  display: grid;
+  place-items: center;
   text-align: center;
-  font-size: 1.8rem;
-  font-weight: 500;
-  margin-top: 0.8rem;
+  min-height: 20rem;
+  border: 1px dashed var(--color-grey-200);
+  border-radius: var(--border-radius-md);
+  background-color: var(--color-grey-50);
+  color: var(--color-grey-500);
+  font-size: 1.6rem;
+  font-weight: 600;
 `;
 
 function Today() {
@@ -63,42 +73,3 @@ function Today() {
 }
 
 export default Today;
-
-const OLDdata = [
-  {
-    id: 1,
-    status: 'unconfirmed',
-    guests: { fullName: 'Jonas Schmedtmann' },
-    numNights: 6,
-  },
-  {
-    id: 2,
-    status: 'unconfirmed',
-    guests: { fullName: 'Steven Miller' },
-    numNights: 1,
-  },
-  {
-    id: 3,
-    status: 'checked-in',
-    guests: { fullName: 'John Smith' },
-    numNights: 3,
-  },
-  {
-    id: 4,
-    status: 'unconfirmed',
-    guests: { fullName: 'Marta Schmedtmann' },
-    numNights: 14,
-  },
-  {
-    id: 5,
-    status: 'checked-in',
-    guests: { fullName: 'Miguel Silva' },
-    numNights: 5,
-  },
-  {
-    id: 6,
-    status: 'checked-in',
-    guests: { fullName: 'Mary Williams' },
-    numNights: 4,
-  },
-];

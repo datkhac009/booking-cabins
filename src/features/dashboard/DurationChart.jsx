@@ -8,22 +8,23 @@ import {
   Tooltip,
 } from "recharts";
 import styled from "styled-components";
+import Heading from "../../ui/Heading";
+import DashboardBox from "./DashboardBox";
 
-const ChartBox = styled.div`
-  /* Box */
-  background-color: var(--color-grey-0);
-  border: 1px solid var(--color-grey-100);
-  border-radius: var(--border-radius-md);
-
-  padding: 2.4rem 3.2rem;
+const ChartBox = styled(DashboardBox)`
   grid-column: 3 / span 2;
+  min-height: 34rem;
 
   & > *:first-child {
-    margin-bottom: 1.6rem;
+    margin-bottom: 0;
   }
 
   & .recharts-pie-label-text {
     font-weight: 600;
+  }
+
+  @media (max-width: 1180px) {
+    grid-column: 1 / -1;
   }
 `;
 /*
@@ -228,24 +229,24 @@ function prepareData(startData, stays) {
 }
 
 function DurationChart({ confirmedStays }) {
-  console.log(confirmedStays);
   const { isDarkMode } = useDarkMode();
   const startData = isDarkMode ? startDataDark : startDataLight;
   const data = prepareData(startData,confirmedStays);
   return (
     <ChartBox>
-      <ResponsiveContainer width="100%" height={240}>
+      <Heading type="h2">Stay duration summary</Heading>
+      <ResponsiveContainer width="100%" height={260}>
         <PieChart>
           <Pie
             data={data}
             nameKey="duration"
             dataKey="value"
-            cx="40%"
+            cx="42%"
             cy="50%"
-            innerRadius={85}
-            outerRadius={110}
+            innerRadius={78}
+            outerRadius={104}
             fill="#4f46e5"
-            paddingAngle={3}
+            paddingAngle={4}
             startAngle={180}
             endAngle={-180}
           >
@@ -261,9 +262,9 @@ function DurationChart({ confirmedStays }) {
           <Legend
             verticalAlign="middle"
             align="right"
-            width="30%"
+            width="34%"
             layout="vertical"
-            iconSize={15}
+            iconSize={11}
             iconType="circle"
           />
         </PieChart>

@@ -1,36 +1,89 @@
 import { useForm } from "react-hook-form";
+import styled, { css } from "styled-components";
 import Button from "../../ui/Button";
 import Form from "../../ui/Form";
 import FormRow from "../../ui/FormRow";
 import Input from "../../ui/Input";
+import SpinnerMini from "../../ui/SpinnerMini";
 import useSignUpForm from "./useSignUpForm";
 
-// Email regex: /\S+@\S+\.\S+/
+const StyledSignupForm = styled(Form)`
+  ${(props) =>
+    props.$flat &&
+    css`
+      width: 100%;
+      padding: 0;
+      border: none;
+      box-shadow: none;
+      background: transparent;
+      overflow: visible;
+    `}
+`;
 
-function SignupForm() {
-  const { register, formState, getValues, handleSubmit, reset } = useForm();
+const FormActions = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+  width: 100%;
+
+  @media (max-width: 520px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+function SignupForm({ flat = false }) {
+  const { register, formState, getValues, handleSubmit, reset } = useForm({
+    defaultValues: {
+      fullName: "",
+      email: "",
+      password: "",
+      passwordConfirm: "",
+    },
+  });
   const { errors } = formState;
   const { signup, isLoading } = useSignUpForm();
 
   function onSubmit({ fullName, email, password }) {
-    signup({ fullName, email, password }, { onSettled: () => reset() });
+    signup(
+      { fullName: fullName.trim(), email: email.trim(), password },
+      { onSuccess: () => reset() }
+    );
   }
+
   return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
-      <FormRow label="Full name" error={errors?.fullName?.message}>
+    <StyledSignupForm $flat={flat} onSubmit={handleSubmit(onSubmit)}>
+      <FormRow
+        label="Full name"
+        error={errors?.fullName?.message}
+        orientation="vertical"
+      >
         <Input
           type="text"
           id="fullName"
-          {...register("fullName", { required: "This field is requied" })}
+          autoComplete="name"
+          disabled={isLoading}
+          {...register("fullName", {
+            required: "Please enter your full name",
+            minLength: {
+              value: 2,
+              message: "Full name needs at least 2 characters",
+            },
+          })}
         />
       </FormRow>
 
-      <FormRow label="Email address" error={errors?.email?.message}>
+      <FormRow
+        label="Email address"
+        error={errors?.email?.message}
+        orientation="vertical"
+      >
         <Input
           type="email"
           id="email"
+          autoComplete="email"
+          disabled={isLoading}
           {...register("email", {
-            required: "This field is requied",
+            required: "Please enter your email address",
             pattern: {
               value: /\S+@\S+\.\S+/,
               message: "Please provide a valid email address",
@@ -42,42 +95,49 @@ function SignupForm() {
       <FormRow
         label="Password (min 8 characters)"
         error={errors?.password?.message}
+        orientation="vertical"
       >
         <Input
           type="password"
           id="password"
+          autoComplete="new-password"
           disabled={isLoading}
           {...register("password", {
-            required: "This field is requied",
-            maxLength: {
+            required: "Please enter a password",
+            minLength: {
               value: 8,
-              message: "Password needs a minium of 8 characters",
+              message: "Password needs at least 8 characters",
             },
           })}
         />
       </FormRow>
 
-      <FormRow label="Repeat password" error={errors?.passwordConfirm?.message}>
+      <FormRow
+        label="Repeat password"
+        error={errors?.passwordConfirm?.message}
+        orientation="vertical"
+      >
         <Input
           type="password"
           id="passwordConfirm"
+          autoComplete="new-password"
           disabled={isLoading}
           {...register("passwordConfirm", {
-            required: "This field is requied",
+            required: "Please confirm your password",
             validate: (value) =>
               value === getValues("password") || "Passwords need to match",
           })}
         />
       </FormRow>
 
-      <FormRow>
-        {/* type is an HTML attribute! */}
-        <Button variation="secondary" type="reset">
-          Cancel
-        </Button>
-        <Button disabled={isLoading}>Create new user</Button>
+      <FormRow orientation="vertical">
+        <FormActions>
+          <Button disabled={isLoading}>
+            {!isLoading ? "Create account" : <SpinnerMini />}
+          </Button>
+        </FormActions>
       </FormRow>
-    </Form>
+    </StyledSignupForm>
   );
 }
 

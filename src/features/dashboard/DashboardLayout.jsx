@@ -11,9 +11,17 @@ import { useCabins } from './../cabins/useCabins';
 
 const StyledDashboardLayout = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  grid-template-rows: auto 34rem auto;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: stretch;
   gap: 2.4rem;
+
+  @media (max-width: 1180px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (max-width: 680px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 /*
