@@ -10,7 +10,12 @@ function SortBy({ options }) {
     }
   return (
     <>
-      <Select options={options} value={sortBy} onChange={handleChange}/>
+      <Select
+        options={options}
+        value={sortBy}
+        onChange={handleChange}
+        active={Boolean(sortBy)}
+      />
     </>
   );
 }

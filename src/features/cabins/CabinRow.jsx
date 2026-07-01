@@ -13,29 +13,58 @@ import CreateCabinFormv1 from "./CreateCabinFormv1";
 
 const Img = styled.img`
   display: block;
-  width: 6.4rem;
-  aspect-ratio: 3 / 2;
+  width: 7.2rem;
+  height: 5.2rem;
   object-fit: cover;
   object-position: center;
-  transform: scale(1.5) translateX(-7px);
+  border-radius: var(--border-radius-sm);
+  box-shadow: var(--shadow-sm);
 `;
 
 const Cabin = styled.div`
+  display: grid;
+  gap: 0.2rem;
+`;
+
+const CabinName = styled.p`
   font-size: 1.6rem;
   font-weight: 600;
+  color: var(--color-grey-800);
+`;
+
+const CabinDescription = styled.p`
+  max-width: 32rem;
+  color: var(--color-grey-500);
+  font-size: 1.3rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
+const Capacity = styled.div`
   color: var(--color-grey-600);
-  font-family: "Sono";
+  font-weight: 500;
 `;
 
 const Price = styled.div`
   font-family: "Sono";
   font-weight: 600;
+  color: var(--color-grey-800);
 `;
 
 const Discount = styled.div`
-  font-family: "Sono";
-  font-weight: 500;
+  justify-self: start;
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  background-color: var(--color-green-100);
   color: var(--color-green-700);
+  font-size: 1.3rem;
+  font-weight: 700;
+`;
+
+const NoDiscount = styled.span`
+  color: var(--color-grey-400);
+  font-weight: 600;
 `;
 
 function CabinRow({ cabin }) {
@@ -67,16 +96,19 @@ function CabinRow({ cabin }) {
     <Table.Row role="row">
       <Img src={image} alt={`Cabin ${name}`} />
 
-      <Cabin>{name}</Cabin>
+      <Cabin>
+        <CabinName>{name}</CabinName>
+        <CabinDescription>{description}</CabinDescription>
+      </Cabin>
 
-      <div>Fits up to {maxCapacity} guests</div>
+      <Capacity>Up to {maxCapacity} guests</Capacity>
 
       <Price>{formatCurrency(regularPrice)}</Price>
 
       {discount ? (
         <Discount>{formatCurrency(discount)}</Discount>
       ) : (
-        <span>&mdash;</span>
+        <NoDiscount>No discount</NoDiscount>
       )}
 
       <Modal>

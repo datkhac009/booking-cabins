@@ -58,27 +58,27 @@ const PaginationButton = styled.button`
   }
 `;
 
-const PAGE_SIZE = 5;
+const DEFAULT_PAGE_SIZE = 5;
 
-function Pagination({ count }) {
+function Pagination({ count, pageSize = DEFAULT_PAGE_SIZE, pageParam = "page" }) {
   const [searchParams, setSearchParams] = useSearchParams();
-  const currentPage = !searchParams.get("page")
+  const currentPage = !searchParams.get(pageParam)
     ? 1
-    : Number(searchParams.get("page"));
+    : Number(searchParams.get(pageParam));
 
-  const pageCount = Math.ceil(count / PAGE_SIZE);
+  const pageCount = Math.ceil(count / pageSize);
 
   function nextPage() {
     const next = currentPage === pageCount ? currentPage : currentPage + 1;
 
-    searchParams.set("page", next);
+    searchParams.set(pageParam, next);
     setSearchParams(searchParams);
   }
 
   function prevPage() {
     const prev = currentPage === 1 ? currentPage : currentPage - 1;
 
-    searchParams.set("page", prev);
+    searchParams.set(pageParam, prev);
     setSearchParams(searchParams);
   }
 
@@ -87,9 +87,9 @@ function Pagination({ count }) {
   return (
     <StyledPagination>
       <P>
-        Showing <span>{(currentPage - 1) * PAGE_SIZE + 1}</span> to{" "}
+        Showing <span>{(currentPage - 1) * pageSize + 1}</span> to{" "}
         <span>
-          {currentPage === pageCount ? count : currentPage * PAGE_SIZE}
+          {currentPage === pageCount ? count : currentPage * pageSize}
         </span>{" "}
         of <span>{count}</span> results
       </P>

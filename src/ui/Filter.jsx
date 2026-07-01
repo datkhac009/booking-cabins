@@ -15,20 +15,21 @@ const StyledFilter = styled.div`
 const FilterButton = styled.button`
   background-color: var(--color-grey-0);
   border: none;
+  color: var(--color-grey-600);
+  border-radius: var(--border-radius-sm);
+  font-weight: 600;
+  font-size: 1.4rem;
+  padding: 0.8rem 1.2rem;
+  transition: all 0.3s;
 
   ${(props) =>
     props.active &&
     css`
       background-color: var(--color-brand-600);
       color: var(--color-brand-50);
+      opacity: 1;
+      cursor: default;
     `}
-
-  border-radius: var(--border-radius-sm);
-  color: var(--color-grey-600);
-  font-weight: 600;
-  font-size: 1.4rem;
-  padding: 0.8rem 1.2rem;
-  transition: all 0.3s;
 
   &:hover:not(:disabled) {
     background-color: var(--color-brand-600);

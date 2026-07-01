@@ -5,12 +5,13 @@ import { useCabins } from "./useCabins";
 import styled from "styled-components";
 import Menus from "../../ui/Menus";
 import { useSearchParams } from "react-router-dom";
+import Pagination from "../../ui/Pagination";
 
 const TableWrapper = styled.div`
-  max-height: 60vh;
-  overflow-y: auto;
-  overflow-x: hidden;
-  border-radius: 12px;
+  overflow-y: hidden;
+  overflow-x: auto;
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-sm);
 
   &::-webkit-scrollbar {
     width: 8px;
@@ -31,15 +32,19 @@ const TableWrapper = styled.div`
   }
 
   & > * {
-    border-radius: 12px;
+    min-width: 82rem;
+    border-radius: var(--border-radius-md);
+    overflow: hidden;
   }
+
 `;
+
+const PAGE_SIZE = 5;
 
 export default function CabinTable() {
   const { isLoading, cabins } = useCabins();
   const [searchParams] = useSearchParams();
 
-  console.log(cabins);
   if (isLoading) return <Spinner />;
 
   //Filter
@@ -52,30 +57,45 @@ export default function CabinTable() {
     filteredCabins = cabins.filter((cabin) => cabin.discount > 0);
   
   //Sort
-  const sortBy = searchParams.get("sortBy") || "startData-asc";
+  const sortBy = searchParams.get("sortBy") || "name-asc";
   const [field, direction] = sortBy.split("-");
   const modifier = direction === "asc" ? 1 : -1;
-  const sortedCabins = filteredCabins.sort(
-    (a, b) => (a[field] - b[field]) * modifier,
-  );
+  const sortedCabins = [...filteredCabins].sort((a, b) => {
+    if (typeof a[field] === "string")
+      return a[field].localeCompare(b[field]) * modifier;
+
+    return (a[field] - b[field]) * modifier;
+  });
+
+  // Pagination
+  const currentPage = !searchParams.get("page")
+    ? 1
+    : Number(searchParams.get("page"));
+  const from = (currentPage - 1) * PAGE_SIZE;
+  const to = from + PAGE_SIZE;
+  const paginatedCabins = sortedCabins.slice(from, to);
   
   return (
     <TableWrapper>
       <Menus>
-        <Table columns="2.4fr 1.2fr 1fr 1fr 1fr 1fr">
+        <Table columns="9.6rem minmax(16rem, 1.4fr) 1fr 1fr 1fr 4.8rem">
           <Table.Header>
-            <span style={{ justifySelf: "self-start" }}></span>
+            <span style={{ justifySelf: "start" }}>Image</span>
             <span style={{ justifySelf: "start" }}>Cabin</span>
-            <span style={{ justifySelf: "center" }}>Capacity</span>
-            <span style={{ justifySelf: "center" }}>Price</span>
-            <span style={{ justifySelf: "center" }}>Discount</span>
-            <span style={{ justifySelf: "self-end" }}></span>
+            <span>Capacity</span>
+            <span>Price</span>
+            <span>Discount</span>
+            <span></span>
           </Table.Header>
 
           <Table.Body
-            data={sortedCabins}
+            data={paginatedCabins}
             render={(cabin) => <CabinRow key={cabin.id} cabin={cabin} />}
           />
+
+          <Table.Footer>
+            <Pagination count={sortedCabins.length} />
+          </Table.Footer>
         </Table>
       </Menus>
     </TableWrapper>
